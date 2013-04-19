@@ -4,8 +4,14 @@ import java.sql.SQLException;
 
 import module.projects.presentationTier.vaadin.Reportable;
 import module.projects.presentationTier.vaadin.reportType.ReportType;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+
 import pt.ist.bennu.core._development.PropertiesManager;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
@@ -53,5 +59,19 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
 
     public Table getTable() {
         return viewTable;
+    }
+
+    @Override
+    public void write(HSSFSheet sheet) {
+        int rowNum = sheet.getLastRowNum() + 2;
+        for (Object itemId : viewTable.getItemIds()) {
+            Item i = viewTable.getItem(itemId);
+            HSSFRow row = sheet.createRow(rowNum++);
+            int cellNum = 0;
+            for (Object propertyID : i.getItemPropertyIds()) {
+                HSSFCell cell = row.createCell(cellNum++);
+                cell.setCellValue(i.getItemProperty(propertyID).getValue().toString());
+            }
+        }
     }
 }

@@ -1,11 +1,16 @@
 package module.projects.presentationTier.vaadin.reportType;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Link;
@@ -13,13 +18,17 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 
 public class CabimentosReportType extends ReportType {
+    ReportViewerComponent reportViewer;
+    TableSummaryComponent tableSummary;
 
     public CabimentosReportType(Map<String, String> args, Project project) {
         super(args, project);
-        ReportViewerComponent reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
+        reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         addComponent(reportViewer);
-        addComponent(new TableSummaryComponent(reportViewer.getTable(), getLabel(), "PAI_VALOR_TOTAL", "TOTAL_EXECUCOES",
-                "EXECUCOES_EM_FALTA"));
+        tableSummary =
+                new TableSummaryComponent(reportViewer.getTable(), getLabel(), "PAI_VALOR_TOTAL", "TOTAL_EXECUCOES",
+                        "EXECUCOES_EM_FALTA");
+        addComponent(tableSummary);
     }
 
     @Override
@@ -55,5 +64,24 @@ public class CabimentosReportType extends ReportType {
     @Override
     public String getLabel() {
         return CABIMENTOS_LABEL;
+    }
+
+    @Override
+    public void write(HSSFSheet sheet) {
+        reportViewer.write(sheet);
+        tableSummary.write(sheet);
+
+        HashMap<String, String> fakeArguments = getArgs();
+        fakeArguments.put("reportType", "cabimentosDetailsReport");
+        //fakeArguments.put("PAI_IDMOV", value)
+        Table t = reportViewer.getTable();
+
+        for (Object i : t.getItemIds()) {
+            Item item = t.getItem(i);
+            String parentID = item.getItemProperty("PAI_IDMOV").getValue().toString();
+            fakeArguments.put("PAI_IDMOV", parentID);
+            ReportType subReport = ReportType.getReportFromType("cabimentosDetailsReport", fakeArguments, getProject());
+            subReport.write(sheet);
+        }
     }
 }

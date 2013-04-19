@@ -3,16 +3,26 @@ package module.projects.presentationTier.vaadin.reportType;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
+import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
 public class CabimentosDetailsReportType extends ReportType {
     String paiIDMOV;
+    ReportViewerComponent reportViewer;
+    TableSummaryComponent tableSummary;
 
     public CabimentosDetailsReportType(Map<String, String> args, Project project) {
         // TODO Auto-generated constructor stub
         super(args, project);
         paiIDMOV = args.get("PAI_IDMOV");
-        addComponent(new ReportViewerComponent(getQuery(), getCustomFormatter()));
+        reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
+        addComponent(reportViewer);
+
+        //TODO change this to the right columns
+        //tableSummary = new TableSummaryComponent(reportViewer.getTable(), getLabel(), "PAI_VALOR_TOTAL");
     }
 
     @Override
@@ -25,6 +35,12 @@ public class CabimentosDetailsReportType extends ReportType {
     @Override
     public String getLabel() {
         return ReportType.CABIMENTOS_DETAILS_STRING;
+    }
+
+    @Override
+    public void write(HSSFSheet sheet) {
+        reportViewer.write(sheet);
+        //tableSummary.write(sheet);
     }
 
 }

@@ -5,6 +5,7 @@
 package module.projects.presentationTier.vaadin.reportType;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.Reportable;
@@ -81,6 +82,12 @@ public abstract class ReportType implements Reportable {
     private final String projectID;
     private final Layout layout;
     private final String projectCode;
+    ProjectHeaderComponent header;
+    private Project project;
+
+    protected Project getProject() {
+        return project;
+    }
 
     protected String getProjectCode() {
         return projectCode;
@@ -120,8 +127,10 @@ public abstract class ReportType implements Reportable {
         layout = new VerticalLayout();
         projectID = args.get("unit");
         if (project != null) {
+            this.project = project;
             projectCode = project.getProjectCode();
-            layout.addComponent(new ProjectHeaderComponent(getLabel(), project));
+            header = new ProjectHeaderComponent(getLabel(), project);
+            layout.addComponent(header);
         } else {
             projectCode = null;
         }
@@ -147,4 +156,17 @@ public abstract class ReportType implements Reportable {
 
     }
 
+    protected HashMap<String, String> getArgs() {
+        HashMap<String, String> args = new HashMap<String, String>();
+        args.put("unit", projectID);
+        return args;
+    }
+
+    protected Layout getLayout() {
+        return layout;
+    }
+
+    public Reportable getHeader() {
+        return header;
+    }
 }

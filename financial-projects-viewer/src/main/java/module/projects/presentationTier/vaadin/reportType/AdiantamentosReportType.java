@@ -3,6 +3,9 @@ package module.projects.presentationTier.vaadin.reportType;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
 import com.vaadin.data.Property;
@@ -51,5 +54,11 @@ public class AdiantamentosReportType extends ReportType {
     @Override
     public String getLabel() {
         return ADIANTAMENTOS_LABEL;
+    }
+
+    @Override
+    public void write(HSSFSheet sheet) {
+        // TODO Auto-generated method stub
+
     }
 }
