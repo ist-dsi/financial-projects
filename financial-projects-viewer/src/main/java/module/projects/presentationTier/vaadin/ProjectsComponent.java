@@ -21,8 +21,8 @@ import pt.ist.fenixframework.FenixFramework;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
 import pt.ist.vaadinframework.ui.EmbeddedComponentContainer;
 
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.StreamResource;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -56,15 +56,16 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
         if (reportType != null && project != null && project.isResponsible(UserView.getCurrentUser().getExpenditurePerson())) {
             layout.addComponent(reportType.getComponent(project.getProjectCode()));
         }
-        Button testButton = new Button("Excel Report");
-        testButton.addListener(new Button.ClickListener() {
+        Button generateExcellButton = new Button("Excel Report");
+        generateExcellButton.setIcon(new ThemeResource("icons/excel.gif"));
+        generateExcellButton.addListener(new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
                 exportToExcel();
             }
         });
-        panel.addComponent(testButton);
+        panel.addComponent(generateExcellButton);
 
     }
 
@@ -100,13 +101,11 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
 
         byte[] buffer = new byte[256];
         ByteArrayInputStream inStream = new ByteArrayInputStream(buffer);
-        DownloadStream downStream = new DownloadStream(inStream, "xls", "report");
         final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
         StreamResource.StreamSource source = new StreamResource.StreamSource() {
             @Override
             public InputStream getStream() {
-                byte[] buffer = new byte[256];
                 ByteArrayInputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
                 return inStream;
             }

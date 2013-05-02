@@ -118,6 +118,9 @@ public abstract class ReportType implements Reportable {
         if (reportType.equals(ADIANTAMENTOS_DETAILS_STRING)) {
             return new AdiantamentosDetailsReportType(args, project);
         }
+        if (reportType.equals(REVENUE_STRING)) {
+            return new RevenueReportType(args, project);
+        }
         return null;
     }
 
