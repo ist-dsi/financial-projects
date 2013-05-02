@@ -17,7 +17,7 @@ import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 import pt.ist.expenditureTrackingSystem.domain.organization.SubProject;
 import pt.ist.expenditureTrackingSystem.domain.organization.Unit;
-import pt.ist.fenixframework.pstm.AbstractDomainObject;
+import pt.ist.fenixframework.FenixFramework;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
 import pt.ist.vaadinframework.ui.EmbeddedComponentContainer;
 
@@ -75,7 +75,7 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
     }
 
     private Project getProjectFromID(String projectID) {
-        Unit project = AbstractDomainObject.fromExternalId(projectID);
+        Unit project = FenixFramework.getDomainObject(projectID);
         if (project instanceof Project) {
             return (Project) project;
         } else if (project instanceof SubProject) {
