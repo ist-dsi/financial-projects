@@ -6,6 +6,8 @@ import java.util.Map;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
@@ -68,9 +70,19 @@ public abstract class MovementsReportType extends ReportType {
 
         Table t = reportViewer.getTable();
 
-        for (Object i : t.getItemIds()) {
-            Item item = t.getItem(i);
+        for (Object itemId : t.getItemIds()) {
+            Item item = t.getItem(itemId);
             String parentID = item.getItemProperty("PAI_IDMOV").getValue().toString();
+
+            int rowNum = reportViewer.writeHeader(sheet);
+            HSSFRow row = sheet.createRow(rowNum);
+            int i = 0;
+            for (Object propertyId : item.getItemPropertyIds()) {
+                Property p = item.getItemProperty(propertyId);
+                HSSFCell cell = row.createCell(i++);
+                cell.setCellValue(p.getValue().toString());
+            }
+
             fakeArguments.put("PAI_IDMOV", parentID);
             ReportType subReport = ReportType.getReportFromType("cabimentosDetailsReport", fakeArguments, getProject());
             subReport.write(sheet);

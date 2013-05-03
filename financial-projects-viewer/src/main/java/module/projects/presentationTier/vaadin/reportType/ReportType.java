@@ -10,6 +10,10 @@ import java.util.Map;
 
 import module.projects.presentationTier.vaadin.Reportable;
 import module.projects.presentationTier.vaadin.reportType.components.ProjectHeaderComponent;
+import module.projects.presentationTier.vaadin.reportType.movementReportType.AdiantamentosDetailsReportType;
+import module.projects.presentationTier.vaadin.reportType.movementReportType.AdiantamentosReportType;
+import module.projects.presentationTier.vaadin.reportType.movementReportType.CabimentosDetailsReportType;
+import module.projects.presentationTier.vaadin.reportType.movementReportType.CabimentosReportType;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
 import com.vaadin.ui.Component;
@@ -120,6 +124,9 @@ public abstract class ReportType implements Reportable {
         }
         if (reportType.equals(REVENUE_STRING)) {
             return new RevenueReportType(args, project);
+        }
+        if (reportType.equals(EXPENSES_STRING)) {
+            return new ExpensesReportType(args, project);
         }
         return null;
     }

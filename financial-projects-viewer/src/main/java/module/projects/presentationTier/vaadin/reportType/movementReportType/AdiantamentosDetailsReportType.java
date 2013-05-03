@@ -1,7 +1,8 @@
-package module.projects.presentationTier.vaadin.reportType;
+package module.projects.presentationTier.vaadin.reportType.movementReportType;
 
 import java.util.Map;
 
+import module.projects.presentationTier.vaadin.reportType.MovementsDetailsReportType;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
