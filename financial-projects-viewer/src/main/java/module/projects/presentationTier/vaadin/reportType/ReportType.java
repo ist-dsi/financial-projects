@@ -10,6 +10,7 @@ import java.util.Map;
 
 import module.projects.presentationTier.vaadin.Reportable;
 import module.projects.presentationTier.vaadin.reportType.components.ProjectHeaderComponent;
+import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 import module.projects.presentationTier.vaadin.reportType.movementReportType.AdiantamentosDetailsReportType;
 import module.projects.presentationTier.vaadin.reportType.movementReportType.AdiantamentosReportType;
 import module.projects.presentationTier.vaadin.reportType.movementReportType.CabimentosDetailsReportType;
@@ -128,6 +129,9 @@ public abstract class ReportType implements Reportable {
         if (reportType.equals(EXPENSES_STRING)) {
             return new ExpensesReportType(args, project);
         }
+        if (reportType.equals(PROJECT_BUDGETARY_BALANCE_STRING)) {
+            return new BudgetaryBalanceReportType(args, project);
+        }
         return null;
     }
 
@@ -178,5 +182,9 @@ public abstract class ReportType implements Reportable {
 
     public Reportable getHeader() {
         return header;
+    }
+
+    public TableSummaryComponent getSummary() {
+        throw new UnsupportedOperationException();
     }
 }

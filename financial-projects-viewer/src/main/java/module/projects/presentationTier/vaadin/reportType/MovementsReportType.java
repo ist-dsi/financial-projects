@@ -88,4 +88,9 @@ public abstract class MovementsReportType extends ReportType {
             subReport.write(sheet);
         }
     }
+
+    @Override
+    public TableSummaryComponent getSummary() {
+        return tableSummary;
+    }
 }

@@ -9,15 +9,14 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
-public class RevenueReportType extends ReportType {
+public class BudgetaryBalanceReportType extends ReportType {
     ReportViewerComponent reportViewer;
     TableSummaryComponent tableSummary;
 
-    public RevenueReportType(Map<String, String> args, Project project) {
+    public BudgetaryBalanceReportType(Map<String, String> args, Project project) {
         super(args, project);
         reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         addComponent(reportViewer);
-        addComponent(new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "Valor"));
     }
 
     protected ReportViewerComponent getReportViewer() {
@@ -37,6 +36,7 @@ public class RevenueReportType extends ReportType {
 
     @Override
     public String getQuery() {
-        return "select distinct * from V_MOVRECEUR where PROJECTCODE='" + getProjectCode() + "'";
+        return "select \"RUBRICA\", \"DESCRICAORUBRICA\", \"ORÇAMENTADO\", \"EXECUTADO\", \"SALDO\" from V_SALDO_PROJECTO where PROJECTO='"
+                + getProjectCode() + "'";
     }
 }
