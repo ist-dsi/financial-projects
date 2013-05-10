@@ -10,6 +10,7 @@ import java.util.Map;
 
 import module.projects.presentationTier.vaadin.Reportable;
 import module.projects.presentationTier.vaadin.reportType.components.ProjectHeaderComponent;
+import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 import module.projects.presentationTier.vaadin.reportType.movementReportType.AdiantamentosDetailsReportType;
 import module.projects.presentationTier.vaadin.reportType.movementReportType.AdiantamentosReportType;
@@ -89,6 +90,7 @@ public abstract class ReportType implements Reportable {
     private final String projectCode;
     ProjectHeaderComponent header;
     private Project project;
+    private boolean headerVisibility = true;
 
     protected Project getProject() {
         return project;
@@ -131,6 +133,9 @@ public abstract class ReportType implements Reportable {
         }
         if (reportType.equals(PROJECT_BUDGETARY_BALANCE_STRING)) {
             return new BudgetaryBalanceReportType(args, project);
+        }
+        if (reportType.equals(OPENING_PROJECT_FILE_LABEL)) {
+            return new OpeningFileReportType(args, project);
         }
         return null;
     }
@@ -186,5 +191,15 @@ public abstract class ReportType implements Reportable {
 
     public TableSummaryComponent getSummary() {
         throw new UnsupportedOperationException();
+    }
+
+    protected abstract ReportViewerComponent getReportViewer();
+
+    protected void setHeaderVisibility(boolean visibility) {
+        headerVisibility = visibility;
+        if (!visibility) {
+            layout.removeComponent(header);
+            header = null;
+        }
     }
 }

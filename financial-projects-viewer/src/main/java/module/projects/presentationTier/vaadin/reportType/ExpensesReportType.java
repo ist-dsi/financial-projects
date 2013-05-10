@@ -100,4 +100,10 @@ public class ExpensesReportType extends ReportType {
         }
         return layout;
     }
+
+    @Override
+    public ReportViewerComponent getReportViewer() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

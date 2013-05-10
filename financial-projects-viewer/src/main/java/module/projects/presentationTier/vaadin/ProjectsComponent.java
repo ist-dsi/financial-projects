@@ -96,7 +96,10 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
 
         cell.setCellValue(reportType.getLabel());
 
-        reportType.getHeader().write(sheet);
+        if (reportType.getHeader() != null) {
+            reportType.getHeader().write(sheet);
+        }
+
         reportType.write(sheet);
 
         byte[] buffer = new byte[256];

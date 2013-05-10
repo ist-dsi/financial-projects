@@ -19,6 +19,7 @@ public class BudgetaryBalanceReportType extends ReportType {
         addComponent(reportViewer);
     }
 
+    @Override
     protected ReportViewerComponent getReportViewer() {
         return reportViewer;
     }
