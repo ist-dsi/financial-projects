@@ -18,7 +18,7 @@ public class TableNavigatorComponent extends CustomComponent {
 
     public TableNavigatorComponent(final Table table, final int pageLength) {
         layout = new HorizontalLayout();
-        layout.setWidth("100%");
+
         layout.setSpacing(true);
         setCompositionRoot(layout);
         this.table = table;

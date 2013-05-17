@@ -23,68 +23,100 @@ public class OpeningFileReportType extends ReportType {
         setHeaderVisibility(false);
         //reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         //addComponent(reportViewer);
+
+        addComponent(new Label("<h3><b>" + OPENING_PROJECT_FILE_LABEL + "</b></h3>", Label.CONTENT_XHTML));
+
         reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         Object itemID = reportViewer.getTable().getItemIds().toArray()[0];
         Item i = reportViewer.getTable().getItem(itemID);
 
+        addComponent(new Label("<h3><b>" + getMessage("financialprojectsreports.openingFile.label.project") + "</b></h3>",
+                Label.CONTENT_XHTML));
         HorizontalLayout projectHeaderLayout = new HorizontalLayout();
-        projectHeaderLayout.addComponent(new Label("Projecto Nº: " + readProperty(i, "PROJECTO")));
-        projectHeaderLayout.addComponent(new Label("Acrónimo: " + readProperty(i, "ACRONIMO")));
-        projectHeaderLayout.addComponent(new Label("Unid Expl: " + readProperty(i, "UNIDEXPL")));
+        projectHeaderLayout.setSpacing(true);
+        projectHeaderLayout.setWidth("100%");
+        projectHeaderLayout.setStyleName("layout-grey-background");
+
+        projectHeaderLayout.addComponent(new Label("<b>Projecto Nº: </b>" + readProperty(i, "PROJECTO"), Label.CONTENT_XHTML));
+        projectHeaderLayout.addComponent(new Label("<b>Acrónimo:</b> " + readProperty(i, "ACRONIMO"), Label.CONTENT_XHTML));
+        projectHeaderLayout.addComponent(new Label("<b>Unid Expl:</b> " + readProperty(i, "UNIDEXPL"), Label.CONTENT_XHTML));
         addComponent(projectHeaderLayout);
 
+        addComponent(new Label("<h3><b>" + getMessage("financialprojectsreports.openingFile.label.coordinator") + "</b></h3>",
+                Label.CONTENT_XHTML));
         GridLayout projectResponsibleLayout = new GridLayout(2, 2);
-        projectResponsibleLayout.addComponent(new Label("Nº Mecanográfico: " + readProperty(i, "NUMCOORDENADOR")));
-        projectResponsibleLayout.addComponent(new Label("Nome: " + readProperty(i, "NOMECOORDENADOR")));
-        projectResponsibleLayout.addComponent(new Label("ext.: " + readProperty(i, "CONTACTO")));
-        projectResponsibleLayout.addComponent(new Label("Unid. Académica: " + readProperty(i, "UNIACAD") + " - "
-                + readProperty(i, "UNIACADDESCRICAO")));
+        projectResponsibleLayout.setSpacing(true);
+        projectResponsibleLayout.setWidth("100%");
+        projectResponsibleLayout.addComponent(new Label("<b>Nº Mecanográfico:</b> " + readProperty(i, "NUMCOORDENADOR"),
+                Label.CONTENT_XHTML));
+        projectResponsibleLayout
+                .addComponent(new Label("<b>Nome:</b> " + readProperty(i, "NOMECOORDENADOR"), Label.CONTENT_XHTML));
+        projectResponsibleLayout.addComponent(new Label("<b>ext.:</b> " + readProperty(i, "CONTACTO"), Label.CONTENT_XHTML));
+        projectResponsibleLayout.addComponent(new Label("<b>Unid. Académica:</b> " + readProperty(i, "UNIACAD") + " - "
+                + readProperty(i, "UNIACADDESCRICAO"), Label.CONTENT_XHTML));
+        projectResponsibleLayout.setStyleName("layout-grey-background");
         addComponent(projectResponsibleLayout);
 
+        addComponent(new Label("<h3><b>" + getMessage("financialprojectsreports.openingFile.label.info") + "</b></h3>",
+                Label.CONTENT_XHTML));
         GridLayout projectInfoLayout = new GridLayout(2, 12);
-        projectInfoLayout.addComponent(new Label("Origem: " + readProperty(i, "ORIGEM")));
-        projectInfoLayout.addComponent(new Label("Tipo: " + readProperty(i, "TIPO")));
-        projectInfoLayout.addComponent(new Label("Custo: " + readProperty(i, "CUSTOS")));
-        projectInfoLayout.addComponent(new Label("Coordenação: " + readProperty(i, "COORDENACAO")));
-        projectInfoLayout.addComponent(new Label("Unid. Operacional: " + readProperty(i, "UNIDOPER") + " - "
-                + readProperty(i, "UNIDOPERDESCRICAO")));
+        projectInfoLayout.setSpacing(true);
+        projectInfoLayout.setWidth("100%");
+        projectInfoLayout.addComponent(new Label("<b>Origem:</b> " + readProperty(i, "ORIGEM"), Label.CONTENT_XHTML));
+        projectInfoLayout.addComponent(new Label("<b>Tipo:</b> " + readProperty(i, "TIPO"), Label.CONTENT_XHTML));
+        projectInfoLayout.addComponent(new Label("<b>Custo:</b> " + readProperty(i, "CUSTOS"), Label.CONTENT_XHTML));
+        projectInfoLayout.addComponent(new Label("<b>Coordenação:</b> " + readProperty(i, "COORDENACAO"), Label.CONTENT_XHTML));
+        projectInfoLayout.addComponent(new Label("<b>Unid. Operacional:</b> " + readProperty(i, "UNIDOPER") + " - "
+                + readProperty(i, "UNIDOPERDESCRICAO"), Label.CONTENT_XHTML));
         projectInfoLayout.newLine();
-        projectInfoLayout.addComponent(new Label("Moeda: " + readProperty(i, "MOEDA")));
-        projectInfoLayout.addComponent(new Label("NIB: " + readProperty(i, "NIB")));
-        projectInfoLayout.addComponent(new Label("Nº Contrato: " + readProperty(i, "NUMCONTRACTO")));
+        projectInfoLayout.addComponent(new Label("<b>Moeda:</b> " + readProperty(i, "MOEDA"), Label.CONTENT_XHTML));
+        projectInfoLayout.addComponent(new Label("<b>NIB:</b> " + readProperty(i, "NIB"), Label.CONTENT_XHTML));
+        projectInfoLayout.addComponent(new Label("<b>Nº Contrato:</b> " + readProperty(i, "NUMCONTRACTO"), Label.CONTENT_XHTML));
         projectInfoLayout.newLine();
-        projectInfoLayout.addComponent(new Label("Nº Projecto Anterior: " + readProperty(i, "OLDPROJ")));
+        projectInfoLayout.addComponent(new Label("<b>Nº Projecto Anterior:</b> " + readProperty(i, "OLDPROJ"),
+                Label.CONTENT_XHTML));
         projectInfoLayout.newLine();
-        projectInfoLayout.addComponent(new Label("DG: " + readProperty(i, "DG")));
-        projectInfoLayout.addComponent(new Label("Programa: " + readProperty(i, "PROGRAMA") + " - "
-                + readProperty(i, "PROGRAMADESCRICAO")));
-        projectInfoLayout.addComponent(new Label("Início: " + readProperty(i, "INICIO")));
-        projectInfoLayout.addComponent(new Label("Duração: " + readProperty(i, "DURACAO")));
-        projectInfoLayout.addComponent(new Label("Título: "));
+        projectInfoLayout.addComponent(new Label("<b>DG:</b> " + readProperty(i, "DG"), Label.CONTENT_XHTML));
+        projectInfoLayout.addComponent(new Label("<b>Programa:</b> " + readProperty(i, "PROGRAMA") + " - "
+                + readProperty(i, "PROGRAMADESCRICAO"), Label.CONTENT_XHTML));
+        projectInfoLayout.addComponent(new Label("<b>Início:</b> " + readProperty(i, "INICIO"), Label.CONTENT_XHTML));
+        projectInfoLayout.addComponent(new Label("<b>Duração:</b> " + readProperty(i, "DURACAO"), Label.CONTENT_XHTML));
+        projectInfoLayout.addComponent(new Label("<b>Título:</b> ", Label.CONTENT_XHTML));
         projectInfoLayout.newLine();
-        projectInfoLayout.addComponent(new Label(readProperty(i, "TITULO")));
+        projectInfoLayout.addComponent(new Label(readProperty(i, "TITULO"), Label.CONTENT_XHTML));
         projectInfoLayout.newLine();
-        projectInfoLayout.addComponent(new Label("Resumo: "));
+        projectInfoLayout.addComponent(new Label("<b>Resumo:</b> ", Label.CONTENT_XHTML));
         projectInfoLayout.newLine();
-        projectInfoLayout.addComponent(new Label(readProperty(i, "RESUMO")));
+        projectInfoLayout.addComponent(new Label(readProperty(i, "RESUMO"), Label.CONTENT_XHTML));
+        projectInfoLayout.setStyleName("layout-grey-background");
         addComponent(projectInfoLayout);
 
+        addComponent(new Label("<h3><b>" + getMessage("financialprojectsreports.openingFile.label.financing") + "</b></h3>",
+                Label.CONTENT_XHTML));
         HorizontalLayout projectFinancingLayout = new HorizontalLayout();
-        projectFinancingLayout.addComponent(new Label("Controlo Orçamental de Membros: " + readProperty(i, "CONTROLOORCAMMEMB")));
-        projectFinancingLayout.addComponent(new Label("Contabilidade IVA: " + readProperty(i, "CONTIVA")));
-        projectFinancingLayout.addComponent(new Label("IVA Elegível: " + readProperty(i, "CONTIVAILEGIVEL")));
+        projectFinancingLayout.setSpacing(true);
+        projectFinancingLayout.setWidth("100%");
+        projectFinancingLayout.addComponent(new Label("<b>Controlo Orçamental de Membros:</b> "
+                + readProperty(i, "CONTROLOORCAMMEMB"), Label.CONTENT_XHTML));
+        projectFinancingLayout.addComponent(new Label("<b>Contabilidade IVA:</b> " + readProperty(i, "CONTIVA"),
+                Label.CONTENT_XHTML));
+        projectFinancingLayout.addComponent(new Label("<b>IVA Elegível:</b> " + readProperty(i, "CONTIVAILEGIVEL"),
+                Label.CONTENT_XHTML));
+        projectFinancingLayout.setStyleName("layout-grey-background");
         addComponent(projectFinancingLayout);
 
-//Data Início   Org Gestão  Unid. Exploração    Unid. Académica     Unid. Operacional   Coordenador
-//02/01/2005  10.0%   5.0%    4.0%    6.0%    0.0%
-//\"OVHDATA\", \"OVHGESTAO\", \"OVHUNIDEXPL\", \"OVHUNIDACAD\", \"OVHUNIDOPER\", \"OVHCOORD\"
+        addComponent(new Label("<h3><b>" + getMessage("financialprojectsreports.openingFile.label.overheadDistribution")
+                + "</b></h3>", Label.CONTENT_XHTML));
         GridLayout overheadDistributionLayout = new GridLayout(6, 2);
-        overheadDistributionLayout.addComponent(new Label("Data Início"));
-        overheadDistributionLayout.addComponent(new Label("Org Gestão"));
-        overheadDistributionLayout.addComponent(new Label("Unid. Exploração"));
-        overheadDistributionLayout.addComponent(new Label("Unid. Académica"));
-        overheadDistributionLayout.addComponent(new Label("Unid. Operacional"));
-        overheadDistributionLayout.addComponent(new Label("Coordenador"));
+        overheadDistributionLayout.setSpacing(true);
+        overheadDistributionLayout.setWidth("100%");
+        overheadDistributionLayout.setStyleName("layout-grey-background");
+        overheadDistributionLayout.addComponent(new Label("<b>Data Início</b>", Label.CONTENT_XHTML));
+        overheadDistributionLayout.addComponent(new Label("<b>Org Gestão</b>", Label.CONTENT_XHTML));
+        overheadDistributionLayout.addComponent(new Label("<b>Unid. Exploração</b>", Label.CONTENT_XHTML));
+        overheadDistributionLayout.addComponent(new Label("<b>Unid. Académica</b>", Label.CONTENT_XHTML));
+        overheadDistributionLayout.addComponent(new Label("<b>Unid. Operacional</b>", Label.CONTENT_XHTML));
+        overheadDistributionLayout.addComponent(new Label("<b>Coordenador</b>", Label.CONTENT_XHTML));
         overheadDistributionLayout.addComponent(new Label(readProperty(i, "OVHDATA")));
         overheadDistributionLayout.addComponent(new Label(readProperty(i, "OVHGESTAO")));
         overheadDistributionLayout.addComponent(new Label(readProperty(i, "OVHUNIDEXPL")));
@@ -93,30 +125,40 @@ public class OpeningFileReportType extends ReportType {
         overheadDistributionLayout.addComponent(new Label(readProperty(i, "OVHCOORD")));
         addComponent(overheadDistributionLayout);
 
-        GridLayout projectConsorciumMembersBudgetLayout = new GridLayout();
-
+        addComponent(new Label("<h3><b>" + getMessage("financialprojectsreports.openingFile.label.financingEntities")
+                + "</b></h3>", Label.CONTENT_XHTML));
         ReportViewerComponent financingEntitiesReportViewer =
                 new ReportViewerComponent(
                         "select \"CODE\", \"DESCRIPTION\", \"VALUE\" from V_ENTIDADES_PROJECTO where PROJECTCODE='"
                                 + getProjectCode() + "'", getCustomFormatter());
+        financingEntitiesReportViewer.getTable().setPageLength(0);
 
         addComponent(financingEntitiesReportViewer);
 
+        addComponent(new Label("<h3><b>" + getMessage("financialprojectsreports.openingFile.label.budgetByRubric") + "</b></h3>",
+                Label.CONTENT_XHTML));
         ReportViewerComponent budgetByRubricReportViewer =
                 new ReportViewerComponent(
                         "select \"CODE\", \"DESCRIPTION\", \"VALUE\" from V_ORCAMENTO_RUBRICA where PROJECTCODE='"
                                 + getProjectCode() + "'", getCustomFormatter());
+        budgetByRubricReportViewer.getTable().setPageLength(0);
         addComponent(budgetByRubricReportViewer);
 
+        addComponent(new Label("<h3><b>" + getMessage("financialprojectsreports.openingFile.label.researchTeam") + "</b></h3>",
+                Label.CONTENT_XHTML));
         ReportViewerComponent teamReportViewer =
                 new ReportViewerComponent("select \"CODE\", \"DESCRIPTION\" from V_EQUIPA_INVESTIGACAO where PROJECTCODE='"
                         + getProjectCode() + "'", getCustomFormatter());
+        teamReportViewer.getTable().setPageLength(0);
         addComponent(teamReportViewer);
 
+        addComponent(new Label("<h3><b>" + getMessage("financialprojectsreports.openingFile.label.membersBudget") + "</b></h3>",
+                Label.CONTENT_XHTML));
         ReportViewerComponent consorciumMemberBudgetViewer =
                 new ReportViewerComponent(
                         "select \"INSTITUICAO\", \"DESCRICAOINSTITUICAO\", \"TIPO\", \"OVH\", \"GRP\", \"PCTFINANCIAMENTO\" from V_MEMBROS_CONSORCIO where PROJECTO='"
                                 + getProjectCode() + "'", getCustomFormatter());
+        consorciumMemberBudgetViewer.getTable().setPageLength(0);
         addComponent(consorciumMemberBudgetViewer);
 
     }
@@ -152,4 +194,8 @@ public class OpeningFileReportType extends ReportType {
         }
     }
 
+    @Override
+    public boolean isToExport() {
+        return false;
+    }
 }

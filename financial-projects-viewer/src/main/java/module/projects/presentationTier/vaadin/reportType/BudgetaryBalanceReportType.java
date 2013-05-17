@@ -32,7 +32,7 @@ public class BudgetaryBalanceReportType extends ReportType {
 
     @Override
     public String getLabel() {
-        return REVENUE_LABEL;
+        return PROJECT_BUDGETARY_BALANCE_LABEL;
     }
 
     @Override

@@ -6,25 +6,38 @@ import module.projects.presentationTier.vaadin.reportType.MovementsDetailsReport
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
-public class AdiantamentosDetailsReportType extends MovementsDetailsReportType {
+import com.vaadin.ui.Table;
 
-    String paiIDMOV;
+public class AdiantamentosDetailsReportType extends MovementsDetailsReportType {
 
     public AdiantamentosDetailsReportType(Map<String, String> args, Project project) {
         // TODO Auto-generated constructor stub
         super(args, project);
-        setTableSummaryReport(new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "FILHO_VALOR"));
+        setTableSummaryReport(new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "TOTAL"));
     }
 
     @Override
     public String getQuery() {
         // TODO Auto-generated method stub
-        return "select distinct \"FILHO_IDMOV\", \"PAI_IDPROJ\", \"PAI_IDRUB\", \"PAI_TIPO\", \"PAI_DATA\", \"PAI_DESCRICAO\", \"PAI_VALOR_TOTAL\" from \"V_MOV_ADIANTAMENTOS\" where \"PAI_IDPROJ\"='"
-                + getProjectCode() + "' AND \"PAI_IDMOV\"='" + paiIDMOV + "'";
+        return "select distinct \"FILHO_IDMOV\", \"FILHO_IDRUB\", \"FILHO_TIPO\", \"FILHO_DATA\", \"FILHO_DESCRICAO\", \"FILHO_VALOR\", \"FILHO_IVA\", \"FILHO_VALOR\" + \"FILHO_IVA\" as TOTAL from \"V_MOV_ADIANTAMENTOS\" where \"PAI_IDPROJ\"='"
+                + getProjectCode() + "' AND \"PAI_IDMOV\"='" + getParentId() + "'";
     }
 
     @Override
     public String getLabel() {
-        return CABIMENTOS_DETAILS_STRING;
+        return ADIANTAMENTOS_DETAILS_LABEL;
+    }
+
+    @Override
+    public void setColumnNames(Table table) {
+        table.setColumnHeader("FILHO_IDMOV", getMessage("financialprojectsreports.column.id"));
+        table.setColumnHeader("FILHO_IDRUB", getMessage("financialprojectsreports.column.rubric"));
+        table.setColumnHeader("FILHO_TIPO", getMessage("financialprojectsreports.column.type"));
+        table.setColumnHeader("FILHO_DATA", getMessage("financialprojectsreports.column.date"));
+        table.setColumnHeader("PAI_IDMOV", getMessage("financialprojectsreports.column.description"));
+        table.setColumnHeader("FILHO_VALOR", getMessage("financialprojectsreports.column.base"));
+        table.setColumnHeader("FILHO_IVA", getMessage("financialprojectsreports.column.iva"));
+        table.setColumnHeader("TOTAL", getMessage("financialprojectsreports.column.value"));
+
     }
 }

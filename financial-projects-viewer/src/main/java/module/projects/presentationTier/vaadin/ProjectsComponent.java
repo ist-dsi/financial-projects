@@ -14,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
+import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 import pt.ist.expenditureTrackingSystem.domain.organization.SubProject;
 import pt.ist.expenditureTrackingSystem.domain.organization.Unit;
@@ -26,21 +27,19 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 
 @EmbeddedComponent(path = { "projectsService" })
 public class ProjectsComponent extends CustomComponent implements EmbeddedComponentContainer {
     Layout layout;
-    Panel panel;
+
     ReportType reportType;
 
     public ProjectsComponent() {
-        layout = new HorizontalLayout();
-        panel = new Panel(layout);
 
-        setCompositionRoot(panel);
+        layout = new VerticalLayout();
+        setCompositionRoot(layout);
 
     }
 
@@ -54,18 +53,23 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
         reportType = ReportType.getReportFromType(reportTypeString, arguments, project);
 
         if (reportType != null && project != null && project.isResponsible(UserView.getCurrentUser().getExpenditurePerson())) {
+
+            Button generateExcellButton =
+                    new Button(BundleUtil.getFormattedStringFromResourceBundle("resources/projectsResources",
+                            "financialprojectsreports.button.excelExport"));
+            generateExcellButton.setIcon(new ThemeResource("icons/excel.gif"));
+            generateExcellButton.addListener(new Button.ClickListener() {
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    exportToExcel();
+                }
+            });
+            if (reportType.isToExport()) {
+                layout.addComponent(generateExcellButton);
+            }
             layout.addComponent(reportType.getComponent(project.getProjectCode()));
         }
-        Button generateExcellButton = new Button("Excel Report");
-        generateExcellButton.setIcon(new ThemeResource("icons/excel.gif"));
-        generateExcellButton.addListener(new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                exportToExcel();
-            }
-        });
-        panel.addComponent(generateExcellButton);
 
     }
 
@@ -102,8 +106,6 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
 
         reportType.write(sheet);
 
-        byte[] buffer = new byte[256];
-        ByteArrayInputStream inStream = new ByteArrayInputStream(buffer);
         final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
         StreamResource.StreamSource source = new StreamResource.StreamSource() {
@@ -120,8 +122,8 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        StreamResource resource = new StreamResource(source, "report.xls", panel.getApplication());
-        panel.getWindow().open(resource, "myname");
+        StreamResource resource = new StreamResource(source, "report.xls", layout.getApplication());
+        layout.getWindow().open(resource, "myname");
     }
 
 }

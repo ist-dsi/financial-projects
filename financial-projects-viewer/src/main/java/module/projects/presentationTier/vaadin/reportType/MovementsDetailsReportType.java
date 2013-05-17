@@ -9,19 +9,20 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
+import com.vaadin.ui.Table;
+
 public abstract class MovementsDetailsReportType extends ReportType {
     String parentID;
     ReportViewerComponent reportViewer;
     TableSummaryComponent tableSummary;
 
     public MovementsDetailsReportType(Map<String, String> args, Project project) {
-        // TODO Auto-generated constructor stub
+
         super(args, project);
         parentID = args.get("PAI_IDMOV");
         reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
+        setColumnNames(reportViewer.getTable());
         addComponent(reportViewer);
-
-        //TODO change this to the right columns
 
     }
 
@@ -34,6 +35,7 @@ public abstract class MovementsDetailsReportType extends ReportType {
         addComponent(tableSummary);
     }
 
+    @Override
     protected ReportViewerComponent getReportViewer() {
         return reportViewer;
     }
@@ -45,4 +47,10 @@ public abstract class MovementsDetailsReportType extends ReportType {
         tableSummary.write(sheet);
     }
 
+    public abstract void setColumnNames(Table table);
+
+    @Override
+    public boolean isToExport() {
+        return false;
+    }
 }

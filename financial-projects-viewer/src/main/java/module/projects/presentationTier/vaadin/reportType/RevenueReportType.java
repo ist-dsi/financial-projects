@@ -20,6 +20,7 @@ public class RevenueReportType extends ReportType {
         addComponent(new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "Valor"));
     }
 
+    @Override
     protected ReportViewerComponent getReportViewer() {
         return reportViewer;
     }
@@ -37,6 +38,7 @@ public class RevenueReportType extends ReportType {
 
     @Override
     public String getQuery() {
-        return "select distinct * from V_MOVRECEUR where PROJECTCODE='" + getProjectCode() + "'";
+        return "select distinct \"idMov\", \"Ent. Financ.\", \"Rubrica\", \"Data\", \"Descrição\", \"Valor\" from V_MOVRECEUR where PROJECTCODE='"
+                + getProjectCode() + "' order by \"Data\", \"idMov\"";
     }
 }

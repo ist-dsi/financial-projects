@@ -26,6 +26,7 @@ public abstract class MovementsReportType extends ReportType {
     public MovementsReportType(Map<String, String> args, Project project) {
         super(args, project);
         reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
+        setColumnNames(reportViewer.getTable());
         addComponent(reportViewer);
     }
 
@@ -34,13 +35,13 @@ public abstract class MovementsReportType extends ReportType {
         return new CustomTableFormatter() {
             @Override
             public void format(Table table) {
-                table.addGeneratedColumn("mycolumn", new ColumnGenerator() {
+                table.addGeneratedColumn(getMessage("financialprojectsreports.movements.column.details"), new ColumnGenerator() {
                     @Override
                     public Object generateCell(Table source, Object itemId, Object columnId) {
                         Property paiIDMOV = source.getItem(itemId).getItemProperty("PAI_IDMOV");
                         Link detailsLink =
-                                new Link("Details", new ExternalResource(
-                                        "#projectsService?reportType=cabimentosDetailsReport&unit=" + getProjectID()
+                                new Link(getMessage("financialprojectsreports.movements.column.details"), new ExternalResource(
+                                        "#projectsService?reportType=" + getChildReportName() + "&unit=" + getProjectID()
                                                 + "&PAI_IDMOV=" + paiIDMOV));
                         //line.addItemProperty(columnId, new ObjectProperty<Link>(detailsLink));
                         return detailsLink;
@@ -51,6 +52,9 @@ public abstract class MovementsReportType extends ReportType {
 
     }
 
+    abstract protected String getChildReportName();
+
+    @Override
     protected ReportViewerComponent getReportViewer() {
         return reportViewer;
     }
@@ -93,4 +97,6 @@ public abstract class MovementsReportType extends ReportType {
     public TableSummaryComponent getSummary() {
         return tableSummary;
     }
+
+    public abstract void setColumnNames(Table table);
 }

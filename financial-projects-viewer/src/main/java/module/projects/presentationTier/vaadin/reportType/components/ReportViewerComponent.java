@@ -33,6 +33,7 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
         viewTable.setContainerDataSource(reportData);
         originalHeader = viewTable.getColumnHeaders();
         formatter.format(viewTable);
+
         setCompositionRoot(viewTable);
 
     }
@@ -50,7 +51,7 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
 
             query = new FreeformQuery(queryString, connectionPool);
             reportData = new SQLContainer(query);
-            viewTable = new Table("A minha tabela....");
+            viewTable = new Table();
             viewTable.setContainerDataSource(reportData);
             viewTable.setEditable(false);
 

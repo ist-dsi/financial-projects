@@ -16,6 +16,7 @@ import module.projects.presentationTier.vaadin.reportType.movementReportType.Adi
 import module.projects.presentationTier.vaadin.reportType.movementReportType.AdiantamentosReportType;
 import module.projects.presentationTier.vaadin.reportType.movementReportType.CabimentosDetailsReportType;
 import module.projects.presentationTier.vaadin.reportType.movementReportType.CabimentosReportType;
+import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
 import com.vaadin.ui.Component;
@@ -79,6 +80,10 @@ public abstract class ReportType implements Reportable {
 
     public static final String ADIANTAMENTOS_LABEL = "Listagem de Adiantamentos";
 
+    public static final String CABIMENTOS_DETAILS_LABEL = "Listagem de Execuções";
+
+    public static final String ADIANTAMENTOS_DETAILS_LABEL = "Listagem de Justificações";
+
     public static final String COMPLETE_EXPENSES_LABEL = "Listagem de Despesas Detalhada";
 
     public static final String OPENING_PROJECT_FILE_LABEL = "Ficha de Abertura de Projecto";
@@ -86,7 +91,7 @@ public abstract class ReportType implements Reportable {
     public static final String PROJECT_BUDGETARY_BALANCE_LABEL = "Saldo Orçamental por Rubrica";
 
     private final String projectID;
-    private final Layout layout;
+    private final VerticalLayout layout;
     private final String projectCode;
     ProjectHeaderComponent header;
     private Project project;
@@ -144,6 +149,8 @@ public abstract class ReportType implements Reportable {
 
     protected ReportType(Map<String, String> args, Project project) {
         layout = new VerticalLayout();
+        layout.setHeight("100%");
+        layout.setSpacing(true);
         projectID = args.get("unit");
         if (project != null) {
             this.project = project;
@@ -165,7 +172,7 @@ public abstract class ReportType implements Reportable {
         public abstract void format(Table table);
     }
 
-    static class NoBehaviourCustomTableFormatter implements CustomTableFormatter {
+    static public class NoBehaviourCustomTableFormatter implements CustomTableFormatter {
 
         @Override
         public void format(Table table) {
@@ -201,5 +208,15 @@ public abstract class ReportType implements Reportable {
             layout.removeComponent(header);
             header = null;
         }
+    }
+
+    public final String RESOURCE_BUNDLE = "resources/projectsResources";
+
+    public String getMessage(String message) {
+        return BundleUtil.getFormattedStringFromResourceBundle(RESOURCE_BUNDLE, message);
+    }
+
+    public boolean isToExport() {
+        return true;
     }
 }

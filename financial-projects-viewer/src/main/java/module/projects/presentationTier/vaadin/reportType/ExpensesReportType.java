@@ -13,6 +13,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Table;
@@ -41,10 +42,16 @@ public class ExpensesReportType extends ReportType {
 
         //filterer.setCurrentSelection(filter);
         reportViwer = new ReportViewerComponent(getQuery(), getCustomFormatter());
+        setVisibleColumns(reportViwer.getTable());
         addComponent(reportViwer);
+
         Table t = reportViwer.getTable();
         addComponent(new TableNavigatorComponent(t));
         addComponent(filterer);
+
+        HorizontalLayout subLayout = new HorizontalLayout();
+        subLayout.setWidth("100%");
+        subLayout.setSpacing(true);
 
         Table eurRevenue =
                 new ReportViewerComponent(
@@ -55,13 +62,18 @@ public class ExpensesReportType extends ReportType {
                         "select \"RECEITA\", \"DESPESA\", \"IVA\", \"TOTAL\" from  V_RESUMO_PTE where PROJECTCODE='"
                                 + getProjectCode() + "'", getCustomFormatter()).getTable();
 
-        addComponent(tableToComponent(eurRevenue));
-        addComponent(tableToComponent(pteRevenue));
+        addComponent(new Label("<b>Tesouraria</b>", Label.CONTENT_XHTML));
+        subLayout.setStyleName("layout-grey-background");
+        subLayout.addComponent(tableToComponent(eurRevenue, getMessage("financialprojectsreports.label.eur")));
+        subLayout.addComponent(tableToComponent(pteRevenue, getMessage("financialprojectsreports.label.pte")));
+        addComponent(subLayout);
 
         TableSummaryComponent cabimentosSummary =
                 ReportType.getReportFromType(ReportType.CABIMENTOS_STRING, args, project).getSummary();
+        cabimentosSummary.setStyleName("layout-grey-background");
         TableSummaryComponent adiantamentosSummary =
                 ReportType.getReportFromType(ReportType.ADIANTAMENTOS_STRING, args, project).getSummary();
+        adiantamentosSummary.setStyleName("layout-grey-background");
 
         addComponent(cabimentosSummary);
         addComponent(adiantamentosSummary);
@@ -82,7 +94,7 @@ public class ExpensesReportType extends ReportType {
     public String getQuery() {
         String query =
 
-                "SELECT \"id Mov.\", \"Membro Cons.\", \"Fornecedor\", \"desc Fornecedor\", \"Tipo Doc.\", \"Nº Doc.\",\"Fonte Financ.\", \"Rubrica\", \"Tipo Mov.\", \"Data Doc\", \"Descrição\", \"pct Iva\",\"Valor\", \"IVA\", \"Total\", \"pct imput.\" FROM v_mov_tesour_eur_completos WHERE PROJECTCODE='"
+                "SELECT \"id Mov.\", \"Membro Cons.\", \"desc Fornecedor\", \"Tipo Doc.\", \"Nº Doc.\",\"Fonte Financ.\", \"Rubrica\", \"Tipo Mov.\", TO_CHAR(\"Data Doc\",'YYYY-MM-DD') as DATA, \"Descrição\", \"pct Iva\",\"Valor\", \"IVA\", \"Total\", \"pct imput.\" FROM v_mov_tesour_eur_completos WHERE PROJECTCODE='"
                         + getProjectCode() + "' ";
         if (filter != null) {
             query += "AND \"Rubrica\"='" + filter + "' ";
@@ -91,12 +103,12 @@ public class ExpensesReportType extends ReportType {
         return query;
     }
 
-    public Component tableToComponent(Table t) {
+    public Component tableToComponent(Table t, String tableName) {
         Layout layout = new VerticalLayout();
-        //this code only works in this scenario in which we know one line will be at the table
         Object itemId = t.getItemIds().toArray()[0];
         for (String column : t.getColumnHeaders()) {
-            layout.addComponent(new Label(column + " " + t.getItem(itemId).getItemProperty(column).toString()));
+            layout.addComponent(new Label("<b>" + column + " " + tableName + ":</b> "
+                    + t.getItem(itemId).getItemProperty(column).toString(), Label.CONTENT_XHTML));
         }
         return layout;
     }
@@ -105,5 +117,29 @@ public class ExpensesReportType extends ReportType {
     public ReportViewerComponent getReportViewer() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void setVisibleColumns(Table table) {
+        table.setVisibleColumns(new String[] { "id Mov.", "Membro Cons.", "Rubrica", "Tipo Mov.", "DATA", "Descrição", "Valor",
+                "IVA", "Total" });
+    }
+
+    public void setColumnNames(Table table) {
+        table.setColumnHeader("ID MOV.", getMessage("financialprojectsreports.expenses.column.id"));
+        table.setColumnHeader("MEMBRO CONS.", getMessage("financialprojectsreports.expenses.column.member"));
+        table.setColumnHeader("DESC FORNECEDOR", getMessage("financialprojectsreports.expenses.column.suplier"));
+        table.setColumnHeader("TIPO DOC.", getMessage("financialprojectsreports.expenses.column.docType"));
+        table.setColumnHeader("Nº DOC.", getMessage("financialprojectsreports.expenses.column.docNumber"));
+        table.setColumnHeader("FONTE FINANC.", getMessage("financialprojectsreports.expenses.column.financialSource"));
+        table.setColumnHeader("RUBRICA", getMessage("financialprojectsreports.expenses.column.rubric"));
+        table.setColumnHeader("TIPO MOV.", getMessage("financialprojectsreports.expenses.column.movType"));
+        table.setColumnHeader("DATA", getMessage("financialprojectsreports.expenses.column.docData"));
+        table.setColumnHeader("DESCRIÇÃO", getMessage("financialprojectsreports.expenses.column.description"));
+        table.setColumnHeader("PCT IVA", getMessage("financialprojectsreports.expenses.column.ivapct"));
+        table.setColumnHeader("VALOR", getMessage("financialprojectsreports.expenses.column.value"));
+        table.setColumnHeader("IVA", getMessage("financialprojectsreports.expenses.column.iva"));
+        table.setColumnHeader("TOTAL", getMessage("financialprojectsreports.expenses.column.total"));
+        table.setColumnHeader("PCT IMPUT.", getMessage("financialprojectsreports.expenses.column.imptpct"));
+
     }
 }
