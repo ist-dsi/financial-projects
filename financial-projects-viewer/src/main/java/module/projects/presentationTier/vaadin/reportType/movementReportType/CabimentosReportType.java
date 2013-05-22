@@ -19,7 +19,7 @@ public class CabimentosReportType extends MovementsReportType {
 
     @Override
     public String getLabel() {
-        return CABIMENTOS_LABEL;
+        return getMessage("financialprojectsreports.reportTitle.cabimentosListing");
     }
 
     @Override
@@ -45,4 +45,15 @@ public class CabimentosReportType extends MovementsReportType {
     protected String getChildReportName() {
         return "cabimentosDetailsReport";
     }
+
+    @Override
+    public String getTypeName() {
+        return "Cabimento";
+    }
+
+    @Override
+    public String getChildTypeName() {
+        return "Execuções";
+    }
+
 }

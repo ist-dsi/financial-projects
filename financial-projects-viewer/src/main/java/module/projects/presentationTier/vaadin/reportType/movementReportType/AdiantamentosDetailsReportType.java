@@ -3,7 +3,6 @@ package module.projects.presentationTier.vaadin.reportType.movementReportType;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.reportType.MovementsDetailsReportType;
-import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
 import com.vaadin.ui.Table;
@@ -13,7 +12,7 @@ public class AdiantamentosDetailsReportType extends MovementsDetailsReportType {
     public AdiantamentosDetailsReportType(Map<String, String> args, Project project) {
         // TODO Auto-generated constructor stub
         super(args, project);
-        setTableSummaryReport(new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "TOTAL"));
+        //setTableSummaryReport(new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "TOTAL"));
     }
 
     @Override
@@ -25,7 +24,7 @@ public class AdiantamentosDetailsReportType extends MovementsDetailsReportType {
 
     @Override
     public String getLabel() {
-        return ADIANTAMENTOS_DETAILS_LABEL;
+        return getMessage("financialprojectsreports.reportTitle.adiantamentosDetailsListing");
     }
 
     @Override

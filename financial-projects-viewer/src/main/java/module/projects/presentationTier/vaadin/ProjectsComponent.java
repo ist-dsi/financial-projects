@@ -9,6 +9,8 @@ import java.util.Map;
 import module.projects.presentationTier.vaadin.reportType.ReportType;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -92,6 +94,11 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
     public void exportToExcel() {
 
         HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFFont headersFont = wb.createFont();
+        headersFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setFont(headersFont);
+
         HSSFSheet sheet = wb.createSheet("My report");
         sheet.setGridsPrinted(false);
 
@@ -99,12 +106,13 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
         HSSFCell cell = row.createCell(0);
 
         cell.setCellValue(reportType.getLabel());
+        cell.setCellStyle(style);
 
         if (reportType.getHeader() != null) {
-            reportType.getHeader().write(sheet);
+            reportType.getHeader().write(sheet, headersFont);
         }
 
-        reportType.write(sheet);
+        reportType.write(sheet, headersFont);
 
         final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 

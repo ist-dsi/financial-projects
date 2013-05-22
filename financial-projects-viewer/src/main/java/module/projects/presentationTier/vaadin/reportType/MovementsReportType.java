@@ -7,6 +7,8 @@ import module.projects.presentationTier.vaadin.reportType.components.ReportViewe
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
@@ -65,9 +67,9 @@ public abstract class MovementsReportType extends ReportType {
     }
 
     @Override
-    public void write(HSSFSheet sheet) {
-        reportViewer.write(sheet);
-        tableSummary.write(sheet);
+    public void write(HSSFSheet sheet, HSSFFont headersFont) {
+        reportViewer.write(sheet, headersFont);
+        tableSummary.write(sheet, headersFont);
 
         HashMap<String, String> fakeArguments = getArgs();
         fakeArguments.put("reportType", "cabimentosDetailsReport");
@@ -78,19 +80,35 @@ public abstract class MovementsReportType extends ReportType {
             Item item = t.getItem(itemId);
             String parentID = item.getItemProperty("PAI_IDMOV").getValue().toString();
 
-            int rowNum = reportViewer.writeHeader(sheet);
-            HSSFRow row = sheet.createRow(rowNum);
+            int rowNum = sheet.getLastRowNum() + 2;
+            HSSFRow row = sheet.createRow(rowNum++);
+            HSSFCell cell = row.createCell(0);
+            HSSFCellStyle style = sheet.getWorkbook().createCellStyle();
+            style.setFont(headersFont);
+            cell.setCellStyle(style);
+            cell.setCellValue(getTypeName() + " Nº" + parentID);
+
+            rowNum = reportViewer.writeHeader(sheet, headersFont);
+            row = sheet.createRow(rowNum++);
             int i = 0;
             for (Object propertyId : item.getItemPropertyIds()) {
                 Property p = item.getItemProperty(propertyId);
-                HSSFCell cell = row.createCell(i++);
+                cell = row.createCell(i++);
                 cell.setCellValue(p.getValue().toString());
             }
 
+            rowNum++;
+            cell = sheet.createRow(rowNum++).createCell(0);
+            cell.setCellValue(getChildTypeName());
+            cell.setCellStyle(style);
+
             fakeArguments.put("PAI_IDMOV", parentID);
-            ReportType subReport = ReportType.getReportFromType("cabimentosDetailsReport", fakeArguments, getProject());
-            subReport.write(sheet);
+            ReportType subReport = ReportType.getReportFromType(getChildReportName(), fakeArguments, getProject());
+            subReport.write(sheet, headersFont);
         }
+
+        sheet.createRow(sheet.getLastRowNum() + 2).createCell(0)
+                .setCellValue(getMessage("financialprojectsreports.expensescalculationwarning"));
     }
 
     @Override
@@ -99,4 +117,9 @@ public abstract class MovementsReportType extends ReportType {
     }
 
     public abstract void setColumnNames(Table table);
+
+    public abstract String getTypeName();
+
+    public abstract String getChildTypeName();
+
 }

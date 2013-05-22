@@ -5,6 +5,7 @@ import java.util.Map;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
@@ -41,10 +42,10 @@ public abstract class MovementsDetailsReportType extends ReportType {
     }
 
     @Override
-    public void write(HSSFSheet sheet) {
+    public void write(HSSFSheet sheet, HSSFFont headersFont) {
 
-        reportViewer.write(sheet);
-        tableSummary.write(sheet);
+        reportViewer.write(sheet, headersFont);
+        //tableSummary.write(sheet, headersFont);
     }
 
     public abstract void setColumnNames(Table table);

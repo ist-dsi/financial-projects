@@ -8,6 +8,9 @@ import module.projects.presentationTier.vaadin.reportType.components.TableLineFi
 import module.projects.presentationTier.vaadin.reportType.components.TableNavigatorComponent;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
@@ -22,6 +25,9 @@ import com.vaadin.ui.VerticalLayout;
 public class ExpensesReportType extends ReportType {
     ReportViewerComponent reportViwer;
     String filter;
+    TableLineFilterComponent filterer;
+    ReportViewerComponent eurRevenue, pteRevenue;
+    TableSummaryComponent cabimentosSummary, adiantamentosSummary;
 
     protected ExpensesReportType(Map<String, String> args, Project project) {
         super(args, project);
@@ -37,7 +43,7 @@ public class ExpensesReportType extends ReportType {
             String description = rubricsTable.getItem(itemId).getItemProperty("DESCRICAO").toString();
             rubricsMap.put(description + " - " + code, code);
         }
-        TableLineFilterComponent filterer = new TableLineFilterComponent(rubricsMap, "projectsService", args, args.get("filter"));
+        filterer = new TableLineFilterComponent(rubricsMap, "projectsService", args, args.get("filter"));
         filter = args.get("filter");
 
         //filterer.setCurrentSelection(filter);
@@ -53,41 +59,70 @@ public class ExpensesReportType extends ReportType {
         subLayout.setWidth("100%");
         subLayout.setSpacing(true);
 
-        Table eurRevenue =
+        eurRevenue =
                 new ReportViewerComponent(
                         "select \"RECEITA\", \"DESPESA\", \"IVA\", \"AD_POR_JUST\", \"TOTAL\" from V_RESUMO_EURO where PROJECTCODE='"
-                                + getProjectCode() + "'", getCustomFormatter()).getTable();
-        Table pteRevenue =
+                                + getProjectCode() + "'", getCustomFormatter());
+        pteRevenue =
                 new ReportViewerComponent(
                         "select \"RECEITA\", \"DESPESA\", \"IVA\", \"TOTAL\" from  V_RESUMO_PTE where PROJECTCODE='"
-                                + getProjectCode() + "'", getCustomFormatter()).getTable();
+                                + getProjectCode() + "'", getCustomFormatter());
 
-        addComponent(new Label("<b>Tesouraria</b>", Label.CONTENT_XHTML));
+        addComponent(new Label("<b>" + getMessage("financialprojectsreports.label.treasury") + "</b>", Label.CONTENT_XHTML));
         subLayout.setStyleName("layout-grey-background");
-        subLayout.addComponent(tableToComponent(eurRevenue, getMessage("financialprojectsreports.label.eur")));
-        subLayout.addComponent(tableToComponent(pteRevenue, getMessage("financialprojectsreports.label.pte")));
+        subLayout.addComponent(tableToComponent(eurRevenue.getTable(), getMessage("financialprojectsreports.label.eur")));
+        subLayout.addComponent(tableToComponent(pteRevenue.getTable(), getMessage("financialprojectsreports.label.pte")));
         addComponent(subLayout);
 
-        TableSummaryComponent cabimentosSummary =
-                ReportType.getReportFromType(ReportType.CABIMENTOS_STRING, args, project).getSummary();
+        cabimentosSummary = ReportType.getReportFromType(ReportType.CABIMENTOS_STRING, args, project).getSummary();
         cabimentosSummary.setStyleName("layout-grey-background");
-        TableSummaryComponent adiantamentosSummary =
-                ReportType.getReportFromType(ReportType.ADIANTAMENTOS_STRING, args, project).getSummary();
+        adiantamentosSummary = ReportType.getReportFromType(ReportType.ADIANTAMENTOS_STRING, args, project).getSummary();
         adiantamentosSummary.setStyleName("layout-grey-background");
 
-        addComponent(cabimentosSummary);
         addComponent(adiantamentosSummary);
+        addComponent(new Label(getMessage("financialprojectsreports.adiantamentosWarning")));
+        addComponent(cabimentosSummary);
+        addComponent(new Label(getMessage("financialprojectsreports.cabimentosWarning")));
 
     }
 
     @Override
-    public void write(HSSFSheet sheet) {
-        reportViwer.write(sheet);
+    public void write(HSSFSheet sheet, HSSFFont headersFont) {
+        reportViwer.write(sheet, headersFont);
+
+        //write applied filter
+        filterer.write(sheet, headersFont);
+        //write eurRevenue, pteRevenue
+        sheet.createRow(sheet.getLastRowNum() + 2).createCell(0)
+                .setCellValue(getMessage("financialprojectsreports.expensescalculationwarning"));
+
+        HSSFCellStyle style = sheet.getWorkbook().createCellStyle();
+        style.setFont(headersFont);
+
+        HSSFCell cell = sheet.createRow(sheet.getLastRowNum() + 2).createCell(0);
+        cell.setCellStyle(style);
+        cell.setCellValue(getMessage("financialprojectsreports.label.revenue") + " "
+                + getMessage("financialprojectsreports.label.eur"));
+        eurRevenue.write(sheet, headersFont);
+
+        cell = sheet.createRow(sheet.getLastRowNum() + 2).createCell(0);
+        cell.setCellStyle(style);
+        cell.setCellValue(getMessage("financialprojectsreports.label.revenue") + " "
+                + getMessage("financialprojectsreports.label.pte"));
+        pteRevenue.write(sheet, headersFont);
+
+        adiantamentosSummary.write(sheet, headersFont);
+        sheet.createRow(sheet.getLastRowNum() + 2).createCell(0)
+                .setCellValue(getMessage("financialprojectsreports.adiantamentosWarning"));
+
+        cabimentosSummary.write(sheet, headersFont);
+        sheet.createRow(sheet.getLastRowNum() + 2).createCell(0)
+                .setCellValue(getMessage("financialprojectsreports.cabimentosWarning"));
     }
 
     @Override
     public String getLabel() {
-        return EXPENSES_LABEL;
+        return getMessage("financialprojectsreports.reportTitle.expenses");
     }
 
     @Override

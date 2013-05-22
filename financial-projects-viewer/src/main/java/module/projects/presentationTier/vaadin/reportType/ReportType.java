@@ -64,32 +64,6 @@ public abstract class ReportType implements Reportable {
 
     public static final String ADIANTAMENTOS_DETAILS_STRING = "adiantamentosDetailsReport";
 
-    public static final String REVENUE_LABEL = "Listagem de Receita em Euros";
-
-    public static final String EXPENSES_LABEL = "Listagem de Despesa em Euros";
-
-    public static final String SUMMARY_LABEL = "Resumo por Coordenador";
-
-    public static final String GENERATED_OVERHEADS_LABEL = "Listagem de Overheads Gerados";
-
-    public static final String TRANSFERED_OVERHEADS_LABEL = "Listagem de Overheads Transferidos";
-
-    public static final String OVERHEADS_SUMMARY_LABEL = "Resumo de Overheads";
-
-    public static final String CABIMENTOS_LABEL = "Listagem de Cabimentos";
-
-    public static final String ADIANTAMENTOS_LABEL = "Listagem de Adiantamentos";
-
-    public static final String CABIMENTOS_DETAILS_LABEL = "Listagem de Execuções";
-
-    public static final String ADIANTAMENTOS_DETAILS_LABEL = "Listagem de Justificações";
-
-    public static final String COMPLETE_EXPENSES_LABEL = "Listagem de Despesas Detalhada";
-
-    public static final String OPENING_PROJECT_FILE_LABEL = "Ficha de Abertura de Projecto";
-
-    public static final String PROJECT_BUDGETARY_BALANCE_LABEL = "Saldo Orçamental por Rubrica";
-
     private final String projectID;
     private final VerticalLayout layout;
     private final String projectCode;
@@ -139,7 +113,7 @@ public abstract class ReportType implements Reportable {
         if (reportType.equals(PROJECT_BUDGETARY_BALANCE_STRING)) {
             return new BudgetaryBalanceReportType(args, project);
         }
-        if (reportType.equals(OPENING_PROJECT_FILE_LABEL)) {
+        if (reportType.equals(OPENING_PROJECT_FILE_STRING)) {
             return new OpeningFileReportType(args, project);
         }
         return null;

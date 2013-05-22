@@ -7,6 +7,8 @@ import java.util.List;
 import module.projects.presentationTier.vaadin.Reportable;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
@@ -22,8 +24,10 @@ public class TableSummaryComponent extends CustomComponent implements Reportable
     List<String> columns;
     List<String> results;
     Layout subLayout;
+    String reportType;
 
     public TableSummaryComponent(Table table, String reportType, String... collumns) {
+        this.reportType = reportType;
         columns = new ArrayList<String>();
         results = new ArrayList<String>();
 
@@ -35,7 +39,7 @@ public class TableSummaryComponent extends CustomComponent implements Reportable
         String totalString =
                 BundleUtil.getFormattedStringFromResourceBundle("resources/projectsResources",
                         "financialprojectsreports.summaryComponent.label.total");
-        layout.addComponent(new Label("<b>" + summaryString + reportType + "</b>", Label.CONTENT_XHTML));
+        layout.addComponent(new Label("<b>" + summaryString + " " + reportType + "</b>", Label.CONTENT_XHTML));
         for (String collumn : collumns) {
             BigDecimal result = new BigDecimal(0);
             for (Object itemID : table.getItemIds()) {
@@ -45,7 +49,7 @@ public class TableSummaryComponent extends CustomComponent implements Reportable
 
             subLayout.addComponent(new Label("<b>" + table.getColumnHeader(collumn).toString() + totalString + " :</b> " + result
                     + "€", Label.CONTENT_XHTML));
-            columns.add(collumn);
+            columns.add(table.getColumnHeader(collumn).toString());
             results.add(result.toString());
         }
         layout.addComponent(subLayout);
@@ -53,11 +57,18 @@ public class TableSummaryComponent extends CustomComponent implements Reportable
     }
 
     @Override
-    public void write(HSSFSheet sheet) {
+    public void write(HSSFSheet sheet, HSSFFont headersFont) {
         int rowNum = sheet.getLastRowNum() + 2;
+        HSSFCellStyle style = sheet.getWorkbook().createCellStyle();
+        style.setFont(headersFont);
+        HSSFCell cell = sheet.createRow(rowNum++).createCell(0);
+        cell.setCellStyle(style);
+        cell.setCellValue(BundleUtil.getFormattedStringFromResourceBundle("resources/projectsResources",
+                "financialprojectsreports.summaryComponent.label.summary") + " " + reportType);
+
         for (int i = 0; i < columns.size(); i++) {
             HSSFRow row = sheet.createRow(rowNum++);
-            HSSFCell cell = row.createCell(0);
+            cell = row.createCell(0);
             cell.setCellValue(columns.get(i) + " Total: ");
             cell = row.createCell(1);
             cell.setCellValue(results.get(i) + "€");

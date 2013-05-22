@@ -5,6 +5,7 @@ import java.util.Map;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
@@ -17,7 +18,8 @@ public class RevenueReportType extends ReportType {
         super(args, project);
         reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         addComponent(reportViewer);
-        addComponent(new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "Valor"));
+        tableSummary = new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "Valor");
+        addComponent(tableSummary);
     }
 
     @Override
@@ -26,14 +28,17 @@ public class RevenueReportType extends ReportType {
     }
 
     @Override
-    public void write(HSSFSheet sheet) {
-        reportViewer.write(sheet);
-        //tableSummary.write(sheet);
+    public void write(HSSFSheet sheet, HSSFFont headersFont) {
+        reportViewer.write(sheet, headersFont);
+        tableSummary.write(sheet, headersFont);
+
+        sheet.createRow(sheet.getLastRowNum() + 2).createCell(0)
+                .setCellValue(getMessage("financialprojectsreports.expensescalculationwarning"));
     }
 
     @Override
     public String getLabel() {
-        return REVENUE_LABEL;
+        return getMessage("financialprojectsreports.reportTitle.revenue");
     }
 
     @Override

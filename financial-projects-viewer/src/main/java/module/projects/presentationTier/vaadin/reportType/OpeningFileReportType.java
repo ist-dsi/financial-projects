@@ -5,6 +5,7 @@ import java.util.Map;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
@@ -24,7 +25,7 @@ public class OpeningFileReportType extends ReportType {
         //reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         //addComponent(reportViewer);
 
-        addComponent(new Label("<h3><b>" + OPENING_PROJECT_FILE_LABEL + "</b></h3>", Label.CONTENT_XHTML));
+        addComponent(new Label("<h3><b>" + getLabel() + "</b></h3>", Label.CONTENT_XHTML));
 
         reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         Object itemID = reportViewer.getTable().getItemIds().toArray()[0];
@@ -169,14 +170,14 @@ public class OpeningFileReportType extends ReportType {
     }
 
     @Override
-    public void write(HSSFSheet sheet) {
+    public void write(HSSFSheet sheet, HSSFFont headersFont) {
         //reportViewer.write(sheet);
         //tableSummary.write(sheet);
     }
 
     @Override
     public String getLabel() {
-        return OPENING_PROJECT_FILE_LABEL;
+        return getMessage("financialprojectsreports.reportTitle.projectOpeningFile");
     }
 
     @Override

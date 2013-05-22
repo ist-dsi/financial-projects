@@ -27,7 +27,7 @@ public class AdiantamentosReportType extends MovementsReportType {
 
     @Override
     public String getLabel() {
-        return ADIANTAMENTOS_LABEL;
+        return getMessage("financialprojectsreports.reportTitle.adiantamentosListing");
     }
 
     @Override
@@ -45,5 +45,15 @@ public class AdiantamentosReportType extends MovementsReportType {
     @Override
     protected String getChildReportName() {
         return "adiantamentosDetailsReport";
+    }
+
+    @Override
+    public String getTypeName() {
+        return "Adiantamento";
+    }
+
+    @Override
+    public String getChildTypeName() {
+        return "Justificações";
     }
 }

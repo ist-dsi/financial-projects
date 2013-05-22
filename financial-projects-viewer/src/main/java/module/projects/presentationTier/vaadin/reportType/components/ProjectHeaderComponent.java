@@ -4,9 +4,13 @@ import module.projects.presentationTier.vaadin.Reportable;
 import module.projects.presentationTier.vaadin.reportType.ReportType;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.util.BundleUtil;
@@ -75,13 +79,15 @@ public class ProjectHeaderComponent extends CustomComponent implements Reportabl
 
         subLayout
                 .addComponent(getMessageBlacked("financialprojectsreports.header.label.acronymfinancialprojectsreports.header.label.date"));
-        subLayout.addComponent(new Label(new DateTime().toString()));
+
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("YYYY-MM-dd");
+        subLayout.addComponent(new Label(fmt.print(new DateTime())));
         setCompositionRoot(layout);
     }
 
     @Override
-    public void write(HSSFSheet sheet) {
-        subLayout.write(sheet);
+    public void write(HSSFSheet sheet, HSSFFont headersFont) {
+        subLayout.write(sheet, headersFont);
     }
 
     String readProperty(Item i, Object propertyID) {
@@ -104,7 +110,7 @@ public class ProjectHeaderComponent extends CustomComponent implements Reportabl
         }
 
         @Override
-        public void write(HSSFSheet sheet) {
+        public void write(HSSFSheet sheet, HSSFFont headersFont) {
             int rowNum = sheet.getLastRowNum() + 2;
             for (int i = 0; i < getRows(); i++) {
                 HSSFRow row = sheet.createRow(rowNum++);
@@ -113,6 +119,11 @@ public class ProjectHeaderComponent extends CustomComponent implements Reportabl
                     Component c = getComponent(j, i);
                     if (c != null) {
                         cell.setCellValue(c.toString());
+                        if (c.getStyleName().equals("bold-label")) {
+                            CellStyle style = sheet.getWorkbook().createCellStyle();
+                            style.setFont(headersFont);
+                            cell.setCellStyle(style);
+                        }
                     }
                 }
             }
@@ -121,8 +132,8 @@ public class ProjectHeaderComponent extends CustomComponent implements Reportabl
     }
 
     public Label getMessageBlacked(String message) {
-        return new Label(
-                "<b>" + BundleUtil.getFormattedStringFromResourceBundle("resources/projectsResources", message) + "</b>",
-                Label.CONTENT_XHTML);
+        Label toReturn = new Label(BundleUtil.getFormattedStringFromResourceBundle("resources/projectsResources", message));
+        toReturn.setStyleName("bold-label");
+        return toReturn;
     }
 }
