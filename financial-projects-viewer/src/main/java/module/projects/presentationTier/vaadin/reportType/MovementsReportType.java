@@ -12,8 +12,6 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.terminal.ExternalResource;
@@ -21,12 +19,12 @@ import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 
-public abstract class MovementsReportType extends ReportType {
+public abstract class MovementsReportType extends ProjectReportType {
     ReportViewerComponent reportViewer;
     TableSummaryComponent tableSummary;
 
-    public MovementsReportType(Map<String, String> args, Project project) {
-        super(args, project);
+    public MovementsReportType(Map<String, String> args) {
+        super(args);
         reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         setColumnNames(reportViewer.getTable());
         addComponent(reportViewer);
@@ -103,7 +101,7 @@ public abstract class MovementsReportType extends ReportType {
             cell.setCellStyle(style);
 
             fakeArguments.put("PAI_IDMOV", parentID);
-            ReportType subReport = ReportType.getReportFromType(getChildReportName(), fakeArguments, getProject());
+            ReportType subReport = ReportType.getReportFromType(getChildReportName(), fakeArguments);
             subReport.write(sheet, headersFont);
         }
 

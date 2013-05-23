@@ -3,14 +3,13 @@ package module.projects.presentationTier.vaadin.reportType.movementReportType;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.reportType.MovementsDetailsReportType;
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
 import com.vaadin.ui.Table;
 
 public class CabimentosDetailsReportType extends MovementsDetailsReportType {
 
-    public CabimentosDetailsReportType(Map<String, String> args, Project project) {
-        super(args, project);
+    public CabimentosDetailsReportType(Map<String, String> args) {
+        super(args);
         //setTableSummaryReport(new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "FILHO_VALOR"));
     }
 

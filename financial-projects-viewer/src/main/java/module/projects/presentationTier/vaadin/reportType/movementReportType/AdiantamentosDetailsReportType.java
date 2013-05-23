@@ -3,15 +3,14 @@ package module.projects.presentationTier.vaadin.reportType.movementReportType;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.reportType.MovementsDetailsReportType;
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
 import com.vaadin.ui.Table;
 
 public class AdiantamentosDetailsReportType extends MovementsDetailsReportType {
 
-    public AdiantamentosDetailsReportType(Map<String, String> args, Project project) {
+    public AdiantamentosDetailsReportType(Map<String, String> args) {
         // TODO Auto-generated constructor stub
-        super(args, project);
+        super(args);
         //setTableSummaryReport(new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "TOTAL"));
     }
 

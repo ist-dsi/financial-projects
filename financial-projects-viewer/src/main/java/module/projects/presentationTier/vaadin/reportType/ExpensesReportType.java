@@ -13,8 +13,6 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
-
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -23,15 +21,15 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
-public class ExpensesReportType extends ReportType {
+public class ExpensesReportType extends ProjectReportType {
     ReportViewerComponent reportViwer;
     String filter;
     TableLineFilterComponent filterer;
     ReportViewerComponent eurRevenue, pteRevenue;
     TableSummaryComponent cabimentosSummary, adiantamentosSummary;
 
-    protected ExpensesReportType(Map<String, String> args, Project project) {
-        super(args, project);
+    protected ExpensesReportType(Map<String, String> args) {
+        super(args);
 
         ReportViewerComponent tempReportViewer =
                 new ReportViewerComponent(
@@ -78,9 +76,9 @@ public class ExpensesReportType extends ReportType {
         subLayout.addComponent(tableToComponent(pteRevenue.getTable(), getMessage("financialprojectsreports.label.pte")));
         addComponent(subLayout);
 
-        cabimentosSummary = ReportType.getReportFromType(ReportType.CABIMENTOS_STRING, args, project).getSummary();
+        cabimentosSummary = ReportType.getReportFromType(ReportType.CABIMENTOS_STRING, args).getSummary();
         cabimentosSummary.setStyleName("layout-grey-background");
-        adiantamentosSummary = ReportType.getReportFromType(ReportType.ADIANTAMENTOS_STRING, args, project).getSummary();
+        adiantamentosSummary = ReportType.getReportFromType(ReportType.ADIANTAMENTOS_STRING, args).getSummary();
         adiantamentosSummary.setStyleName("layout-grey-background");
 
         addComponent(adiantamentosSummary);

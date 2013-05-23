@@ -8,18 +8,16 @@ import module.projects.presentationTier.vaadin.reportType.components.TableSummar
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
-
 import com.vaadin.ui.Table;
 
-public abstract class MovementsDetailsReportType extends ReportType {
+public abstract class MovementsDetailsReportType extends ProjectReportType {
     String parentID;
     ReportViewerComponent reportViewer;
     TableSummaryComponent tableSummary;
 
-    public MovementsDetailsReportType(Map<String, String> args, Project project) {
+    public MovementsDetailsReportType(Map<String, String> args) {
 
-        super(args, project);
+        super(args);
         parentID = args.get("PAI_IDMOV");
         reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         setColumnNames(reportViewer.getTable());

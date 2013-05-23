@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import module.projects.presentationTier.vaadin.IllegalAccessException;
 import module.projects.presentationTier.vaadin.Reportable;
 import module.projects.presentationTier.vaadin.reportType.components.ProjectHeaderComponent;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
@@ -17,7 +18,6 @@ import module.projects.presentationTier.vaadin.reportType.movementReportType.Adi
 import module.projects.presentationTier.vaadin.reportType.movementReportType.CabimentosDetailsReportType;
 import module.projects.presentationTier.vaadin.reportType.movementReportType.CabimentosReportType;
 import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Layout;
@@ -64,26 +64,11 @@ public abstract class ReportType implements Reportable {
 
     public static final String ADIANTAMENTOS_DETAILS_STRING = "adiantamentosDetailsReport";
 
-    private final String projectID;
     private final VerticalLayout layout;
-    private final String projectCode;
     ProjectHeaderComponent header;
-    private Project project;
-    private boolean headerVisibility = true;
+    private boolean headerVisibility;
 
-    protected Project getProject() {
-        return project;
-    }
-
-    protected String getProjectCode() {
-        return projectCode;
-    }
-
-    protected String getProjectID() {
-        return projectID;
-    }
-
-    public Component getComponent(String projectCode) {
+    public Component getComponent() {
         return layout;
     }
 
@@ -91,49 +76,45 @@ public abstract class ReportType implements Reportable {
         layout.addComponent(component);
     }
 
-    public static ReportType getReportFromType(String reportType, Map<String, String> args, Project project) {
-        if (reportType.equals(CABIMENTOS_STRING)) {
-            return new CabimentosReportType(args, project);
+    public static ReportType getReportFromType(String reportType, Map<String, String> args) {
+        try {
+            if (reportType.equals(CABIMENTOS_STRING)) {
+                return new CabimentosReportType(args);
+            }
+            if (reportType.equals(ADIANTAMENTOS_STRING)) {
+                return new AdiantamentosReportType(args);
+            }
+            if (reportType.equals(CABIMENTOS_DETAILS_STRING)) {
+                return new CabimentosDetailsReportType(args);
+            }
+            if (reportType.equals(ADIANTAMENTOS_DETAILS_STRING)) {
+                return new AdiantamentosDetailsReportType(args);
+            }
+            if (reportType.equals(REVENUE_STRING)) {
+                return new RevenueReportType(args);
+            }
+            if (reportType.equals(EXPENSES_STRING)) {
+                return new ExpensesReportType(args);
+            }
+            if (reportType.equals(PROJECT_BUDGETARY_BALANCE_STRING)) {
+                return new BudgetaryBalanceReportType(args);
+            }
+            if (reportType.equals(OPENING_PROJECT_FILE_STRING)) {
+                return new OpeningFileReportType(args);
+            }
+            return null;
+        } catch (IllegalAccessException e) {
+            return null;
         }
-        if (reportType.equals(ADIANTAMENTOS_STRING)) {
-            return new AdiantamentosReportType(args, project);
-        }
-        if (reportType.equals(CABIMENTOS_DETAILS_STRING)) {
-            return new CabimentosDetailsReportType(args, project);
-        }
-        if (reportType.equals(ADIANTAMENTOS_DETAILS_STRING)) {
-            return new AdiantamentosDetailsReportType(args, project);
-        }
-        if (reportType.equals(REVENUE_STRING)) {
-            return new RevenueReportType(args, project);
-        }
-        if (reportType.equals(EXPENSES_STRING)) {
-            return new ExpensesReportType(args, project);
-        }
-        if (reportType.equals(PROJECT_BUDGETARY_BALANCE_STRING)) {
-            return new BudgetaryBalanceReportType(args, project);
-        }
-        if (reportType.equals(OPENING_PROJECT_FILE_STRING)) {
-            return new OpeningFileReportType(args, project);
-        }
-        return null;
     }
 
     public abstract String getLabel();
 
-    protected ReportType(Map<String, String> args, Project project) {
+    protected ReportType(Map<String, String> args) {
         layout = new VerticalLayout();
         layout.setHeight("100%");
         layout.setSpacing(true);
-        projectID = args.get("unit");
-        if (project != null) {
-            this.project = project;
-            projectCode = project.getProjectCode();
-            header = new ProjectHeaderComponent(getLabel(), project);
-            layout.addComponent(header);
-        } else {
-            projectCode = null;
-        }
+
     }
 
     public abstract String getQuery();
@@ -156,7 +137,6 @@ public abstract class ReportType implements Reportable {
 
     protected HashMap<String, String> getArgs() {
         HashMap<String, String> args = new HashMap<String, String>();
-        args.put("unit", projectID);
         return args;
     }
 
@@ -190,5 +170,9 @@ public abstract class ReportType implements Reportable {
 
     public boolean isToExport() {
         return true;
+    }
+
+    protected void setHeader(ProjectHeaderComponent header) {
+        this.header = header;
     }
 }

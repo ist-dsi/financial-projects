@@ -8,16 +8,14 @@ import module.projects.presentationTier.vaadin.reportType.components.TableSummar
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
-
 import com.vaadin.ui.Table;
 
-public class RevenueReportType extends ReportType {
+public class RevenueReportType extends ProjectReportType {
     ReportViewerComponent reportViewer;
     TableSummaryComponent tableSummary;
 
-    public RevenueReportType(Map<String, String> args, Project project) {
-        super(args, project);
+    public RevenueReportType(Map<String, String> args) {
+        super(args);
         reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         addComponent(reportViewer);
         tableSummary = new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "Valor");

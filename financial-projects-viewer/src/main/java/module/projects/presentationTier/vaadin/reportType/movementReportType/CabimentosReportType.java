@@ -4,14 +4,13 @@ import java.util.Map;
 
 import module.projects.presentationTier.vaadin.reportType.MovementsReportType;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
 import com.vaadin.ui.Table;
 
 public class CabimentosReportType extends MovementsReportType {
 
-    public CabimentosReportType(Map<String, String> args, Project project) {
-        super(args, project);
+    public CabimentosReportType(Map<String, String> args) {
+        super(args);
         setTableSummaryReport(new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "PAI_VALOR_TOTAL",
                 "TOTAL_EXECUCOES", "EXECUCOES_EM_FALTA"));
 

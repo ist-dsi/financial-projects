@@ -8,20 +8,18 @@ import module.projects.presentationTier.vaadin.reportType.components.TableSummar
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
-
 import com.vaadin.data.Item;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 
-public class OpeningFileReportType extends ReportType {
+public class OpeningFileReportType extends ProjectReportType {
     ReportViewerComponent reportViewer;
     TableSummaryComponent tableSummary;
 
-    public OpeningFileReportType(Map<String, String> args, Project project) {
-        super(args, project);
+    public OpeningFileReportType(Map<String, String> args) {
+        super(args);
         setHeaderVisibility(false);
         //reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         //addComponent(reportViewer);

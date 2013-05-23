@@ -8,17 +8,15 @@ import module.projects.presentationTier.vaadin.reportType.components.TableSummar
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
-
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 
-public class BudgetaryBalanceReportType extends ReportType {
+public class BudgetaryBalanceReportType extends ProjectReportType {
     ReportViewerComponent reportViewer;
     TableSummaryComponent tableSummary;
 
-    public BudgetaryBalanceReportType(Map<String, String> args, Project project) {
-        super(args, project);
+    public BudgetaryBalanceReportType(Map<String, String> args) {
+        super(args);
         reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         addComponent(reportViewer);
         setColumnNames(reportViewer.getTable());

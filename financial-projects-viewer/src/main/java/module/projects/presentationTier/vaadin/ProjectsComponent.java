@@ -15,12 +15,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
-import pt.ist.expenditureTrackingSystem.domain.organization.SubProject;
-import pt.ist.expenditureTrackingSystem.domain.organization.Unit;
-import pt.ist.fenixframework.FenixFramework;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
 import pt.ist.vaadinframework.ui.EmbeddedComponentContainer;
 
@@ -50,11 +45,10 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
         // TODO Auto-generated method stub
         String projectID = arguments.get("unit");
         String reportTypeString = arguments.get("reportType");
-        Project project = getProjectFromID(projectID);
 
-        reportType = ReportType.getReportFromType(reportTypeString, arguments, project);
+        reportType = ReportType.getReportFromType(reportTypeString, arguments);
 
-        if (reportType != null && project != null && project.isResponsible(UserView.getCurrentUser().getExpenditurePerson())) {
+        if (reportType != null) {
 
             Button generateExcellButton =
                     new Button(BundleUtil.getFormattedStringFromResourceBundle("resources/projectsResources",
@@ -70,7 +64,7 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
             if (reportType.isToExport()) {
                 layout.addComponent(generateExcellButton);
             }
-            layout.addComponent(reportType.getComponent(project.getProjectCode()));
+            layout.addComponent(reportType.getComponent());
         }
 
     }
@@ -79,16 +73,6 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
     public boolean isAllowedToOpen(Map<String, String> parameters) {
         // TODO Auto-generated method stub
         return true;
-    }
-
-    private Project getProjectFromID(String projectID) {
-        Unit project = FenixFramework.getDomainObject(projectID);
-        if (project instanceof Project) {
-            return (Project) project;
-        } else if (project instanceof SubProject) {
-            return (Project) ((SubProject) project).getParentUnit();
-        }
-        return null;
     }
 
     public void exportToExcel() {
