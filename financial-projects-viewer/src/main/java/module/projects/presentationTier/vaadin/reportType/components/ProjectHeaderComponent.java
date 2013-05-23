@@ -52,33 +52,33 @@ public class ProjectHeaderComponent extends CustomComponent implements Reportabl
         Person manager = User.findByUsername(readProperty(item, "GESTOR")).getExpenditurePerson();
 
         subLayout
-                .addComponent(getMessageBlacked("financialprojectsreports.header.label.acronymfinancialprojectsreports.header.label.acronym"));
+                .addComponent(getMessageBlacked("financialprojectsreports.header.label.financialprojectsreports.header.label.acronym"));
         subLayout.addComponent(new Label(readProperty(item, "TITLE")));
         subLayout
-                .addComponent(getMessageBlacked("financialprojectsreports.header.label.acronymfinancialprojectsreports.header.label.accountManager"));
+                .addComponent(getMessageBlacked("financialprojectsreports.header.label.financialprojectsreports.header.label.accountManager"));
         subLayout.addComponent(new Label(manager.getFirstAndLastName()));
         subLayout
-                .addComponent(getMessageBlacked("financialprojectsreports.header.label.acronymfinancialprojectsreports.header.label.projectNumber"));
+                .addComponent(getMessageBlacked("financialprojectsreports.header.label.financialprojectsreports.header.label.projectNumber"));
         subLayout.addComponent(new Label(readProperty(item, "UNID_EXPLORACAO") + readProperty(item, "ORIGEM")
                 + readProperty(item, "TIPO") + readProperty(item, "CUSTO") + readProperty(item, "COORDENACAO")
                 + project.getExternalId()));
         subLayout
-                .addComponent(getMessageBlacked("financialprojectsreports.header.label.acronymfinancialprojectsreports.header.label.id"));
+                .addComponent(getMessageBlacked("financialprojectsreports.header.label.financialprojectsreports.header.label.id"));
         subLayout.addComponent(new Label(readProperty(item, "GESTOR")));
         subLayout
-                .addComponent(getMessageBlacked("financialprojectsreports.header.label.acronymfinancialprojectsreports.header.label.type"));
+                .addComponent(getMessageBlacked("financialprojectsreports.header.label.financialprojectsreports.header.label.type"));
         subLayout.addComponent(new Label(readProperty(item, "TIPO") + " - " + readProperty(item, "DESCRICAO")));
         subLayout
-                .addComponent(getMessageBlacked("financialprojectsreports.header.label.acronymfinancialprojectsreports.header.label.email"));
+                .addComponent(getMessageBlacked("financialprojectsreports.header.label.financialprojectsreports.header.label.email"));
         subLayout.addComponent(new Label(manager.getEmail()));
         subLayout
-                .addComponent(getMessageBlacked("financialprojectsreports.header.label.acronymfinancialprojectsreports.header.label.coordinator"));
+                .addComponent(getMessageBlacked("financialprojectsreports.header.label.financialprojectsreports.header.label.coordinator"));
         subLayout.addComponent(new Label(readProperty(item, "NOME")));
         subLayout.addComponent(new Label(""));
         subLayout.addComponent(new Label(""));
 
         subLayout
-                .addComponent(getMessageBlacked("financialprojectsreports.header.label.acronymfinancialprojectsreports.header.label.date"));
+                .addComponent(getMessageBlacked("financialprojectsreports.header.label.financialprojectsreports.header.label.date"));
 
         DateTimeFormatter fmt = DateTimeFormat.forPattern("YYYY-MM-dd");
         subLayout.addComponent(new Label(fmt.print(new DateTime())));

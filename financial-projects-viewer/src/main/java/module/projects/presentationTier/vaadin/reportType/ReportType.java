@@ -150,8 +150,6 @@ public abstract class ReportType implements Reportable {
 
         @Override
         public void format(Table table) {
-            // TODO Auto-generated method stub
-
         }
 
     }

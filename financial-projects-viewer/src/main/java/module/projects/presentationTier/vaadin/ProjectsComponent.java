@@ -99,7 +99,7 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
         HSSFCellStyle style = wb.createCellStyle();
         style.setFont(headersFont);
 
-        HSSFSheet sheet = wb.createSheet("My report");
+        HSSFSheet sheet = wb.createSheet(reportType.getLabel());
         sheet.setGridsPrinted(false);
 
         HSSFRow row = sheet.createRow(0);
@@ -130,8 +130,8 @@ public class ProjectsComponent extends CustomComponent implements EmbeddedCompon
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        StreamResource resource = new StreamResource(source, "report.xls", layout.getApplication());
-        layout.getWindow().open(resource, "myname");
+        StreamResource resource = new StreamResource(source, reportType.getLabel() + ".xls", layout.getApplication());
+        layout.getWindow().open(resource, reportType.getLabel());
     }
 
 }

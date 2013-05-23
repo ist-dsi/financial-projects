@@ -10,6 +10,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
+import com.vaadin.ui.Table;
+
 public class RevenueReportType extends ReportType {
     ReportViewerComponent reportViewer;
     TableSummaryComponent tableSummary;
@@ -20,6 +22,7 @@ public class RevenueReportType extends ReportType {
         addComponent(reportViewer);
         tableSummary = new TableSummaryComponent(getReportViewer().getTable(), getLabel(), "Valor");
         addComponent(tableSummary);
+        setColumnNames(reportViewer.getTable());
     }
 
     @Override
@@ -45,5 +48,14 @@ public class RevenueReportType extends ReportType {
     public String getQuery() {
         return "select distinct \"idMov\", \"Ent. Financ.\", \"Rubrica\", \"Data\", \"Descrição\", \"Valor\" from V_MOVRECEUR where PROJECTCODE='"
                 + getProjectCode() + "' order by \"Data\", \"idMov\"";
+    }
+
+    public void setColumnNames(Table table) {
+        table.setColumnHeader("idMov", getMessage("financialprojectsreports.revenue.column.id"));
+        table.setColumnHeader("Ent. Financ.", getMessage("financialprojectsreports.revenue.column.financialEntity"));
+        table.setColumnHeader("Rubrica", getMessage("financialprojectsreports.revenue.column.rubric"));
+        table.setColumnHeader("Data", getMessage("financialprojectsreports.revenue.column.date"));
+        table.setColumnHeader("Descrição", getMessage("financialprojectsreports.revenue.column.description"));
+        table.setColumnHeader("Valor", getMessage("financialprojectsreports.revenue.column.value"));
     }
 }

@@ -15,6 +15,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -49,6 +50,7 @@ public class ExpensesReportType extends ReportType {
         //filterer.setCurrentSelection(filter);
         reportViwer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         setVisibleColumns(reportViwer.getTable());
+        setColumnNames(reportViwer.getTable());
         addComponent(reportViwer);
 
         Table t = reportViwer.getTable();
@@ -67,6 +69,8 @@ public class ExpensesReportType extends ReportType {
                 new ReportViewerComponent(
                         "select \"RECEITA\", \"DESPESA\", \"IVA\", \"TOTAL\" from  V_RESUMO_PTE where PROJECTCODE='"
                                 + getProjectCode() + "'", getCustomFormatter());
+
+        setTreasuryInfoColumnNames(eurRevenue.getTable(), pteRevenue.getTable());
 
         addComponent(new Label("<b>" + getMessage("financialprojectsreports.label.treasury") + "</b>", Label.CONTENT_XHTML));
         subLayout.setStyleName("layout-grey-background");
@@ -140,10 +144,10 @@ public class ExpensesReportType extends ReportType {
 
     public Component tableToComponent(Table t, String tableName) {
         Layout layout = new VerticalLayout();
-        Object itemId = t.getItemIds().toArray()[0];
-        for (String column : t.getColumnHeaders()) {
-            layout.addComponent(new Label("<b>" + column + " " + tableName + ":</b> "
-                    + t.getItem(itemId).getItemProperty(column).toString(), Label.CONTENT_XHTML));
+        Item item = t.getItem(t.getItemIds().toArray()[0]);
+        for (Object column : item.getItemPropertyIds()) {
+            layout.addComponent(new Label("<b>" + t.getColumnHeader(column) + " " + tableName + ":</b> "
+                    + item.getItemProperty(column).toString(), Label.CONTENT_XHTML));
         }
         return layout;
     }
@@ -159,22 +163,36 @@ public class ExpensesReportType extends ReportType {
                 "IVA", "Total" });
     }
 
+    //" \"Descrição\", \"pct Iva\",\"Valor\", \"IVA\", \"Total\", \"pct imput.\" FROM v_mov_tesour_eur_completos WHERE PROJECTCODE='"
     public void setColumnNames(Table table) {
-        table.setColumnHeader("ID MOV.", getMessage("financialprojectsreports.expenses.column.id"));
-        table.setColumnHeader("MEMBRO CONS.", getMessage("financialprojectsreports.expenses.column.member"));
-        table.setColumnHeader("DESC FORNECEDOR", getMessage("financialprojectsreports.expenses.column.suplier"));
-        table.setColumnHeader("TIPO DOC.", getMessage("financialprojectsreports.expenses.column.docType"));
-        table.setColumnHeader("Nº DOC.", getMessage("financialprojectsreports.expenses.column.docNumber"));
-        table.setColumnHeader("FONTE FINANC.", getMessage("financialprojectsreports.expenses.column.financialSource"));
-        table.setColumnHeader("RUBRICA", getMessage("financialprojectsreports.expenses.column.rubric"));
-        table.setColumnHeader("TIPO MOV.", getMessage("financialprojectsreports.expenses.column.movType"));
+        table.setColumnHeader("id Mov.", getMessage("financialprojectsreports.expenses.column.id"));
+        table.setColumnHeader("Membro Cons.", getMessage("financialprojectsreports.expenses.column.member"));
+        table.setColumnHeader("desc Fornecedor", getMessage("financialprojectsreports.expenses.column.suplier"));
+        table.setColumnHeader("Tipo Doc.", getMessage("financialprojectsreports.expenses.column.docType"));
+        table.setColumnHeader("Nº Doc.", getMessage("financialprojectsreports.expenses.column.docNumber"));
+        table.setColumnHeader("Fonte Financ.", getMessage("financialprojectsreports.expenses.column.financialSource"));
+        table.setColumnHeader("Rubrica", getMessage("financialprojectsreports.expenses.column.rubric"));
+        table.setColumnHeader("Tipo Mov.", getMessage("financialprojectsreports.expenses.column.movType"));
         table.setColumnHeader("DATA", getMessage("financialprojectsreports.expenses.column.docData"));
-        table.setColumnHeader("DESCRIÇÃO", getMessage("financialprojectsreports.expenses.column.description"));
-        table.setColumnHeader("PCT IVA", getMessage("financialprojectsreports.expenses.column.ivapct"));
-        table.setColumnHeader("VALOR", getMessage("financialprojectsreports.expenses.column.value"));
+        table.setColumnHeader("Descrição", getMessage("financialprojectsreports.expenses.column.description"));
+        table.setColumnHeader("pct Iva", getMessage("financialprojectsreports.expenses.column.ivapct"));
+        table.setColumnHeader("Valor", getMessage("financialprojectsreports.expenses.column.value"));
         table.setColumnHeader("IVA", getMessage("financialprojectsreports.expenses.column.iva"));
-        table.setColumnHeader("TOTAL", getMessage("financialprojectsreports.expenses.column.total"));
-        table.setColumnHeader("PCT IMPUT.", getMessage("financialprojectsreports.expenses.column.imptpct"));
+        table.setColumnHeader("Total", getMessage("financialprojectsreports.expenses.column.total"));
+        table.setColumnHeader("pct imput.", getMessage("financialprojectsreports.expenses.column.imptpct"));
+    }
+
+    public void setTreasuryInfoColumnNames(Table eurTable, Table pteTable) {
+        eurTable.setColumnHeader("RECEITA", getMessage("financialprojectsreports.expenses.treasury.column.revenue"));
+        eurTable.setColumnHeader("DESPESA", getMessage("financialprojectsreports.expenses.treasury.column.expense"));
+        eurTable.setColumnHeader("IVA", getMessage("financialprojectsreports.expenses.treasury.column.iva"));
+        eurTable.setColumnHeader("TOTAL", getMessage("financialprojectsreports.expenses.treasury.column.total"));
+        eurTable.setColumnHeader("AD_POR_JUST", getMessage("financialprojectsreports.expenses.treasury.column.just_ad"));
+
+        pteTable.setColumnHeader("RECEITA", getMessage("financialprojectsreports.expenses.treasury.column.revenue"));
+        pteTable.setColumnHeader("DESPESA", getMessage("financialprojectsreports.expenses.treasury.column.expense"));
+        pteTable.setColumnHeader("IVA", getMessage("financialprojectsreports.expenses.treasury.column.iva"));
+        pteTable.setColumnHeader("TOTAL", getMessage("financialprojectsreports.expenses.treasury.column.total"));
 
     }
 }

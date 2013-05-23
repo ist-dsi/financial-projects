@@ -11,6 +11,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 
 public class BudgetaryBalanceReportType extends ReportType {
     ReportViewerComponent reportViewer;
@@ -20,6 +21,7 @@ public class BudgetaryBalanceReportType extends ReportType {
         super(args, project);
         reportViewer = new ReportViewerComponent(getQuery(), getCustomFormatter());
         addComponent(reportViewer);
+        setColumnNames(reportViewer.getTable());
         addComponent(new Label(getMessage("financialprojectsreports.balanceWarning")));
     }
 
@@ -44,5 +46,13 @@ public class BudgetaryBalanceReportType extends ReportType {
     public String getQuery() {
         return "select \"RUBRICA\", \"DESCRICAORUBRICA\", \"ORÇAMENTADO\", \"EXECUTADO\", \"SALDO\" from V_SALDO_PROJECTO where PROJECTO='"
                 + getProjectCode() + "'";
+    }
+
+    public void setColumnNames(Table table) {
+        table.setColumnHeader("RUBRICA", getMessage("financialprojectsreports.budgetaryBalance.column.rubric"));
+        table.setColumnHeader("DESCRICAORUBRICA", getMessage("financialprojectsreports.budgetaryBalance.column.description"));
+        table.setColumnHeader("ORÇAMENTADO", getMessage("financialprojectsreports.budgetaryBalance.column.budget"));
+        table.setColumnHeader("EXECUTADO", getMessage("financialprojectsreports.budgetaryBalance.column.executed"));
+        table.setColumnHeader("SALDO", getMessage("financialprojectsreports.budgetaryBalance.column.balance"));
     }
 }
