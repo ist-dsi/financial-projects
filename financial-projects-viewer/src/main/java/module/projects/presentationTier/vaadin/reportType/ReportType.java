@@ -17,6 +17,9 @@ import module.projects.presentationTier.vaadin.reportType.movementReportType.Adi
 import module.projects.presentationTier.vaadin.reportType.movementReportType.AdiantamentosReportType;
 import module.projects.presentationTier.vaadin.reportType.movementReportType.CabimentosDetailsReportType;
 import module.projects.presentationTier.vaadin.reportType.movementReportType.CabimentosReportType;
+import module.projects.presentationTier.vaadin.reportType.overheadReportType.UnitGeneratedOverheadsReportType;
+import module.projects.presentationTier.vaadin.reportType.overheadReportType.UnitOverheadsSummaryReportType;
+import module.projects.presentationTier.vaadin.reportType.overheadReportType.UnitTransferedOverheadsReportType;
 import pt.ist.bennu.core.util.BundleUtil;
 
 import com.vaadin.ui.Component;
@@ -35,6 +38,8 @@ public abstract class ReportType implements Reportable {
     public static final String EXPENSES_STRING = "expensesReport";
 
     public static final String SUMMARY_STRING = "summaryReport";
+
+    public static final String UNIT_SUMMARY_STRING = "unitSummaryReport";
 
     public static final String SUMMARY_PTE_STRING = "summary_PTE";
 
@@ -102,6 +107,22 @@ public abstract class ReportType implements Reportable {
             if (reportType.equals(OPENING_PROJECT_FILE_STRING)) {
                 return new OpeningFileReportType(args);
             }
+            if (reportType.equals(SUMMARY_STRING)) {
+                return new CoordinatorReportType(args);
+            }
+            if (reportType.equals(UNIT_SUMMARY_STRING)) {
+                return new UnitSubProjectsSummaryReport(args);
+            }
+            if (reportType.equals(GENERATED_OVERHEADS_STRING)) {
+                return new UnitGeneratedOverheadsReportType(args);
+            }
+            if (reportType.equals(TRANSFERED_OVERHEADS_STRING)) {
+                return new UnitTransferedOverheadsReportType(args);
+            }
+            if (reportType.equals(OVERHEADS_SUMMARY_STRING)) {
+                return new UnitOverheadsSummaryReportType(args);
+            }
+
             return null;
         } catch (IllegalAccessException e) {
             return null;

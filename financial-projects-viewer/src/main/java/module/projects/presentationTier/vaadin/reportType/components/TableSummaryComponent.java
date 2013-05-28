@@ -37,8 +37,9 @@ public class TableSummaryComponent extends CustomComponent implements Reportable
                 BundleUtil.getFormattedStringFromResourceBundle("resources/projectsResources",
                         "financialprojectsreports.summaryComponent.label.summary");
         String totalString =
-                BundleUtil.getFormattedStringFromResourceBundle("resources/projectsResources",
-                        "financialprojectsreports.summaryComponent.label.total");
+                " "
+                        + BundleUtil.getFormattedStringFromResourceBundle("resources/projectsResources",
+                                "financialprojectsreports.summaryComponent.label.total");
         layout.addComponent(new Label("<b>" + summaryString + " " + reportType + "</b>", Label.CONTENT_XHTML));
         for (String collumn : collumns) {
             BigDecimal result = new BigDecimal(0);

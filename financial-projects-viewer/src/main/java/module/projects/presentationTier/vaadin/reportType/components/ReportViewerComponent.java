@@ -34,6 +34,7 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
 
         getDatabaseContainer(queryString);
         viewTable.setContainerDataSource(reportData);
+        viewTable.setSizeUndefined();
         originalHeader = viewTable.getColumnHeaders();
         formatter.format(viewTable);
 
