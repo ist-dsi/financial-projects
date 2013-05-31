@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.IllegalAccessException;
+import module.projects.presentationTier.vaadin.reportType.components.CoordinatorHeaderComponent;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
+import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
+import pt.ist.expenditureTrackingSystem.domain.organization.Person;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 import pt.ist.expenditureTrackingSystem.domain.organization.Unit;
 import pt.ist.fenixframework.FenixFramework;
@@ -22,6 +25,9 @@ import com.vaadin.ui.Table;
 public class UnitSubProjectsSummaryReport extends ReportType {
     private final String unitID;
     final List<String> projectCodes;
+    ReportViewerComponent reportViewer;
+    TableSummaryComponent summary;
+    CoordinatorHeaderComponent header;
 
     protected UnitSubProjectsSummaryReport(Map<String, String> args) {
         super(args);
@@ -29,8 +35,8 @@ public class UnitSubProjectsSummaryReport extends ReportType {
 
         unitID = args.get("unit");
         Unit unit = FenixFramework.getDomainObject(unitID);
-        //|| !UserView.getCurrentUser().getExpenditurePerson().getDirectResponsibleUnits().contains(unit)
-        if (unit.isProject()) {
+        Person currentUser = UserView.getCurrentUser().getExpenditurePerson();
+        if (unit.isProject() || !(unit.isResponsible(currentUser) || unit.getObserversSet().contains(currentUser))) {
             throw new IllegalAccessException();
         }
 
@@ -48,13 +54,16 @@ public class UnitSubProjectsSummaryReport extends ReportType {
         if (query == null) {
             addComponent(new Label(getMessage("financialprojectsreports.unitReport.label.noProjects")));
         } else {
-            ReportViewerComponent reportViewer = new ReportViewerComponent(query, getCustomFormatter());
+            header = new CoordinatorHeaderComponent(unit.getName(), getLabel());
+
+            addComponent(header);
+            reportViewer = new ReportViewerComponent(query, getCustomFormatter());
             setColumnNames(reportViewer.getTable());
             Panel panel = new Panel();
             panel.addComponent(reportViewer);
             panel.getContent().setSizeUndefined();
             addComponent(panel);
-            TableSummaryComponent summary =
+            summary =
                     new TableSummaryComponent(reportViewer.getTable(), getLabel(), "ORCBRUTO", "MAXFINANC", "RECEITA",
                             "TRF_PARCEIROS", "DESP_VALOR", "JU_AD_VALOR", "TREASURY_BALANCE", "CB_AD_VALOR", "BUDGET_BALANCE");
             addComponent(summary);
@@ -63,8 +72,9 @@ public class UnitSubProjectsSummaryReport extends ReportType {
 
     @Override
     public void write(HSSFSheet sheet, HSSFFont headersFont) {
-        // TODO Auto-generated method stub
-
+        header.write(sheet, headersFont);
+        reportViewer.write(sheet, headersFont);
+        summary.write(sheet, headersFont);
     }
 
     @Override

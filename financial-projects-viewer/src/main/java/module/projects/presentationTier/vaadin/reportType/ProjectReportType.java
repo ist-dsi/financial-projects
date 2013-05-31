@@ -5,6 +5,7 @@ import java.util.Map;
 import module.projects.presentationTier.vaadin.IllegalAccessException;
 import module.projects.presentationTier.vaadin.reportType.components.ProjectHeaderComponent;
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
+import pt.ist.expenditureTrackingSystem.domain.organization.Person;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 import pt.ist.expenditureTrackingSystem.domain.organization.SubProject;
 import pt.ist.expenditureTrackingSystem.domain.organization.Unit;
@@ -33,7 +34,7 @@ public abstract class ProjectReportType extends ReportType {
         projectID = args.get("unit");
         Project project = getProjectFromID(projectID);
 
-        if (project != null && project.isResponsible(UserView.getCurrentUser().getExpenditurePerson())) {
+        if (project != null && checkAccessControl(projectID)) {
             this.project = project;
             projectCode = project.getProjectCode();
             ProjectHeaderComponent header = new ProjectHeaderComponent(getLabel(), project);
@@ -42,6 +43,12 @@ public abstract class ProjectReportType extends ReportType {
         } else {
             throw new IllegalAccessException();
         }
+    }
+
+    private boolean checkAccessControl(String unit) {
+        Unit project = FenixFramework.getDomainObject(unit);
+        Person currentUser = UserView.getCurrentUser().getExpenditurePerson();
+        return project.isResponsible(currentUser) || project.getObserversSet().contains(currentUser);
     }
 
     private Project getProjectFromID(String projectID) {

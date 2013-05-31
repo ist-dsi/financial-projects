@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import module.projects.presentationTier.vaadin.reportType.components.CoordinatorHeaderComponent;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 
@@ -23,6 +24,7 @@ import com.vaadin.ui.Table;
 public class CoordinatorReportType extends ReportType {
     final ReportViewerComponent reportViewer;
     TableSummaryComponent summary;
+    CoordinatorHeaderComponent header;
 
     protected CoordinatorReportType(Map<String, String> args) {
         super(args);
@@ -30,6 +32,9 @@ public class CoordinatorReportType extends ReportType {
         addComponent(new Label("<b>" + getLabel() + "</b>", Label.CONTENT_XHTML));
         String query = getQuery();
         if (query != null) {
+            header = new CoordinatorHeaderComponent(UserView.getCurrentUser().getPresentationName(), getLabel());
+
+            addComponent(header);
             reportViewer = new ReportViewerComponent(query, getCustomFormatter());
             setColumnNames(reportViewer.getTable());
             summary =
@@ -42,7 +47,6 @@ public class CoordinatorReportType extends ReportType {
             panel.addComponent(reportViewer);
             panel.setWidth("100%");
             panel.getContent().setSizeUndefined();
-            //addComponent(reportViewer);
             addComponent(summary);
             addComponent(new Label(getMessage("financialprojectsreports.coordinatorReport.label.warning")));
 
@@ -55,6 +59,9 @@ public class CoordinatorReportType extends ReportType {
 
     @Override
     public void write(HSSFSheet sheet, HSSFFont headersFont) {
+        header.write(sheet, headersFont);
+        reportViewer.write(sheet, headersFont);
+        summary.write(sheet, headersFont);
     }
 
     @Override
@@ -65,6 +72,8 @@ public class CoordinatorReportType extends ReportType {
     @Override
     public String getQuery() {
         List<Unit> directResponsibleUnits = UserView.getCurrentUser().getExpenditurePerson().getDirectResponsibleUnits();
+        directResponsibleUnits.addAll(UserView.getCurrentUser().getExpenditurePerson().getObservableUnitsSet());
+
         List<String> directResponsibleProjectCodes = new LinkedList<String>();
         for (Unit unit : directResponsibleUnits) {
             Project project = getProjectFromID(unit.getExternalId());
