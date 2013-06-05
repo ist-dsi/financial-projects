@@ -8,9 +8,19 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import module.projects.presentationTier.vaadin.IllegalAccessException;
 import module.projects.presentationTier.vaadin.Reportable;
 import module.projects.presentationTier.vaadin.reportType.components.ProjectHeaderComponent;
-import pt.ist.expenditureTrackingSystem.domain.organization.Project;
+import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
+import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
+import module.projects.presentationTier.vaadin.reportType.movementReportType.AdiantamentosDetailsReportType;
+import module.projects.presentationTier.vaadin.reportType.movementReportType.AdiantamentosReportType;
+import module.projects.presentationTier.vaadin.reportType.movementReportType.CabimentosDetailsReportType;
+import module.projects.presentationTier.vaadin.reportType.movementReportType.CabimentosReportType;
+import module.projects.presentationTier.vaadin.reportType.overheadReportType.UnitGeneratedOverheadsReportType;
+import module.projects.presentationTier.vaadin.reportType.overheadReportType.UnitOverheadsSummaryReportType;
+import module.projects.presentationTier.vaadin.reportType.overheadReportType.UnitTransferedOverheadsReportType;
+import pt.ist.bennu.core.util.BundleUtil;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Layout;
@@ -28,6 +38,8 @@ public abstract class ReportType implements Reportable {
     public static final String EXPENSES_STRING = "expensesReport";
 
     public static final String SUMMARY_STRING = "summaryReport";
+
+    public static final String UNIT_SUMMARY_STRING = "unitSummaryReport";
 
     public static final String SUMMARY_PTE_STRING = "summary_PTE";
 
@@ -57,47 +69,11 @@ public abstract class ReportType implements Reportable {
 
     public static final String ADIANTAMENTOS_DETAILS_STRING = "adiantamentosDetailsReport";
 
-    public static final String REVENUE_LABEL = "Listagem de Receita em Euros";
-
-    public static final String EXPENSES_LABEL = "Listagem de Despesa em Euros";
-
-    public static final String SUMMARY_LABEL = "Resumo por Coordenador";
-
-    public static final String GENERATED_OVERHEADS_LABEL = "Listagem de Overheads Gerados";
-
-    public static final String TRANSFERED_OVERHEADS_LABEL = "Listagem de Overheads Transferidos";
-
-    public static final String OVERHEADS_SUMMARY_LABEL = "Resumo de Overheads";
-
-    public static final String CABIMENTOS_LABEL = "Listagem de Cabimentos";
-
-    public static final String ADIANTAMENTOS_LABEL = "Listagem de Adiantamentos";
-
-    public static final String COMPLETE_EXPENSES_LABEL = "Listagem de Despesas Detalhada";
-
-    public static final String OPENING_PROJECT_FILE_LABEL = "Ficha de Abertura de Projecto";
-
-    public static final String PROJECT_BUDGETARY_BALANCE_LABEL = "Saldo Orçamental por Rubrica";
-
-    private final String projectID;
-    private final Layout layout;
-    private final String projectCode;
+    private final VerticalLayout layout;
     ProjectHeaderComponent header;
-    private Project project;
+    private boolean headerVisibility;
 
-    protected Project getProject() {
-        return project;
-    }
-
-    protected String getProjectCode() {
-        return projectCode;
-    }
-
-    protected String getProjectID() {
-        return projectID;
-    }
-
-    public Component getComponent(String projectCode) {
+    public Component getComponent() {
         return layout;
     }
 
@@ -105,35 +81,61 @@ public abstract class ReportType implements Reportable {
         layout.addComponent(component);
     }
 
-    public static ReportType getReportFromType(String reportType, Map<String, String> args, Project project) {
-        if (reportType.equals(CABIMENTOS_STRING)) {
-            return new CabimentosReportType(args, project);
+    public static ReportType getReportFromType(String reportType, Map<String, String> args) {
+        try {
+            if (reportType.equals(CABIMENTOS_STRING)) {
+                return new CabimentosReportType(args);
+            }
+            if (reportType.equals(ADIANTAMENTOS_STRING)) {
+                return new AdiantamentosReportType(args);
+            }
+            if (reportType.equals(CABIMENTOS_DETAILS_STRING)) {
+                return new CabimentosDetailsReportType(args);
+            }
+            if (reportType.equals(ADIANTAMENTOS_DETAILS_STRING)) {
+                return new AdiantamentosDetailsReportType(args);
+            }
+            if (reportType.equals(REVENUE_STRING)) {
+                return new RevenueReportType(args);
+            }
+            if (reportType.equals(EXPENSES_STRING)) {
+                return new ExpensesReportType(args);
+            }
+            if (reportType.equals(PROJECT_BUDGETARY_BALANCE_STRING)) {
+                return new BudgetaryBalanceReportType(args);
+            }
+            if (reportType.equals(OPENING_PROJECT_FILE_STRING)) {
+                return new OpeningFileReportType(args);
+            }
+            if (reportType.equals(SUMMARY_STRING)) {
+                return new CoordinatorReportType(args);
+            }
+            if (reportType.equals(UNIT_SUMMARY_STRING)) {
+                return new UnitSubProjectsSummaryReport(args);
+            }
+            if (reportType.equals(GENERATED_OVERHEADS_STRING)) {
+                return new UnitGeneratedOverheadsReportType(args);
+            }
+            if (reportType.equals(TRANSFERED_OVERHEADS_STRING)) {
+                return new UnitTransferedOverheadsReportType(args);
+            }
+            if (reportType.equals(OVERHEADS_SUMMARY_STRING)) {
+                return new UnitOverheadsSummaryReportType(args);
+            }
+
+            return null;
+        } catch (IllegalAccessException e) {
+            return null;
         }
-        if (reportType.equals(ADIANTAMENTOS_STRING)) {
-            return new AdiantamentosReportType(args, project);
-        }
-        if (reportType.equals(CABIMENTOS_DETAILS_STRING)) {
-            return new CabimentosDetailsReportType(args, project);
-        }
-        if (reportType.equals(ADIANTAMENTOS_DETAILS_STRING)) {
-            return new AdiantamentosDetailsReportType(args, project);
-        }
-        return null;
     }
 
     public abstract String getLabel();
 
-    protected ReportType(Map<String, String> args, Project project) {
+    protected ReportType(Map<String, String> args) {
         layout = new VerticalLayout();
-        projectID = args.get("unit");
-        if (project != null) {
-            this.project = project;
-            projectCode = project.getProjectCode();
-            header = new ProjectHeaderComponent(getLabel(), project);
-            layout.addComponent(header);
-        } else {
-            projectCode = null;
-        }
+        layout.setHeight("100%");
+        layout.setSpacing(true);
+
     }
 
     public abstract String getQuery();
@@ -146,19 +148,16 @@ public abstract class ReportType implements Reportable {
         public abstract void format(Table table);
     }
 
-    static class NoBehaviourCustomTableFormatter implements CustomTableFormatter {
+    static public class NoBehaviourCustomTableFormatter implements CustomTableFormatter {
 
         @Override
         public void format(Table table) {
-            // TODO Auto-generated method stub
-
         }
 
     }
 
     protected HashMap<String, String> getArgs() {
         HashMap<String, String> args = new HashMap<String, String>();
-        args.put("unit", projectID);
         return args;
     }
 
@@ -168,5 +167,33 @@ public abstract class ReportType implements Reportable {
 
     public Reportable getHeader() {
         return header;
+    }
+
+    public TableSummaryComponent getSummary() {
+        throw new UnsupportedOperationException();
+    }
+
+    protected abstract ReportViewerComponent getReportViewer();
+
+    protected void setHeaderVisibility(boolean visibility) {
+        headerVisibility = visibility;
+        if (!visibility) {
+            layout.removeComponent(header);
+            header = null;
+        }
+    }
+
+    public final String RESOURCE_BUNDLE = "resources/projectsResources";
+
+    public String getMessage(String message) {
+        return BundleUtil.getFormattedStringFromResourceBundle(RESOURCE_BUNDLE, message);
+    }
+
+    public boolean isToExport() {
+        return true;
+    }
+
+    protected void setHeader(ProjectHeaderComponent header) {
+        this.header = header;
     }
 }
