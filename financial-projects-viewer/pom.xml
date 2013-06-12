@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>projects</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>Projects</name>
@@ -19,7 +19,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.pt.ist.bennu.core>1.1.0</version.pt.ist.bennu.core>
 		<version.pt.ist.bennu.vaadin>1.1.0</version.pt.ist.bennu.vaadin>
-		<version.pt.ist.expenditure.tracking>1.3.0-SNAPSHOT</version.pt.ist.expenditure.tracking>
+		<version.pt.ist.expenditure.tracking>1.4.0</version.pt.ist.expenditure.tracking>
 	</properties>
 
 	<organization>
