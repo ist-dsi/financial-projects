@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import module.projects.presentationTier.vaadin.Reportable;
 import module.projects.presentationTier.vaadin.reportType.ReportType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -13,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.IndexedColors;
 
 import pt.ist.bennu.core._development.PropertiesManager;
+import pt.ist.bennu.core.domain.VirtualHost;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
@@ -46,24 +48,36 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
         this.queryString = queryString;
         try {
             //needed to assure the class is loaded and registred as a driver
-            Class.forName("oracle.jdbc.driver.OracleDriver");
+            final String driverName = "oracle.jdbc.driver.OracleDriver";
+            Class.forName(driverName);
+            final String propPrefix = "db.mgp" + getHostPropertyPart();
             SimpleJDBCConnectionPool connectionPool =
-                    new SimpleJDBCConnectionPool(PropertiesManager.getProperty("db.projectManagement.driver"),
-                            PropertiesManager.getProperty("db.projectManagement.alias"),
-                            PropertiesManager.getProperty("db.projectManagement.user"),
-                            PropertiesManager.getProperty("db.projectManagement.pass"), 2, 5);
+                    new SimpleJDBCConnectionPool(driverName,
+                	    getAlias(propPrefix),
+                	    PropertiesManager.getProperty(propPrefix + ".user"),
+                	    PropertiesManager.getProperty(propPrefix + ".pass"), 2, 5);
 
             query = new FreeformQuery(queryString, connectionPool);
             reportData = new SQLContainer(query);
             viewTable = new Table();
             viewTable.setContainerDataSource(reportData);
             viewTable.setEditable(false);
-
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String getAlias(final String propPrefix) {
+	final String alias = "jdbc:oracle:thin:@//" +  PropertiesManager.getProperty(propPrefix + ".alias");
+	final int i = alias.lastIndexOf(':');
+	return alias.substring(0, i) + '/' + alias.substring(i + 1);
+    }
+
+    private String getHostPropertyPart() {
+	final String title = VirtualHost.getVirtualHostForThread().getApplicationTitle().getContent();
+	return StringUtils.lowerCase(title);
     }
 
     public Table getTable() {
