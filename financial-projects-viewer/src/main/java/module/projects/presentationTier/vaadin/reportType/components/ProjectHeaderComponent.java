@@ -32,10 +32,11 @@ public class ProjectHeaderComponent extends CustomComponent implements Reportabl
     ReportableGridLayout subLayout;
 
     public ProjectHeaderComponent(String reportTypeLabel, Project project) {
+        String projectCode = project.getProjectCode();
 
         String query =
                 "select title, c.nome, tp.descricao, p.origem, p.tipo, p.custo, p.coordenacao, p.UNID_EXPLORACAO, p.gestor from V_Projectos p, V_COORD c , V_TIPOS_PROJECTOS tp  where p.idCoord = c.idCoord and tp.cod = p.tipo and p.projectCode ='"
-                        + project.getProjectCode() + "'";
+                        + projectCode + "'";
         ReportViewerComponent reportViewer = new ReportViewerComponent(query, new ReportType.NoBehaviourCustomTableFormatter());
 
         Table table = reportViewer.getTable();

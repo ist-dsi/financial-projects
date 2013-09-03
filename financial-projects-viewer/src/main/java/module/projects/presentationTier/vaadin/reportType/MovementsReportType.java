@@ -1,6 +1,5 @@
 package module.projects.presentationTier.vaadin.reportType;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
@@ -69,7 +68,7 @@ public abstract class MovementsReportType extends ProjectReportType {
         reportViewer.write(sheet, headersFont);
         tableSummary.write(sheet, headersFont);
 
-        HashMap<String, String> fakeArguments = getArgs();
+        Map<String, String> fakeArguments = getArgs();
         fakeArguments.put("reportType", "cabimentosDetailsReport");
 
         Table t = reportViewer.getTable();

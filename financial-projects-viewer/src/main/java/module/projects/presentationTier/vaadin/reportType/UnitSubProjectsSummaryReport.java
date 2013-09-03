@@ -44,7 +44,11 @@ public class UnitSubProjectsSummaryReport extends ReportType {
             if (subUnit instanceof Project) {
                 Project project = (Project) subUnit;
                 if (!project.hasResponsiblesInUnit()) {
-                    projectCodes.add(project.getProjectCode());
+                    String projectCode = project.getProjectCode();
+                    if (projectCode.matches("[a-zA-Z][a-zA-Z]\\d{1,4}")) {
+                        projectCode = projectCode.substring(2);
+                    }
+                    projectCodes.add(projectCode);
                 }
             }
         }

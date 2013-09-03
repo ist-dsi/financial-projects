@@ -12,7 +12,7 @@ import pt.ist.expenditureTrackingSystem.domain.organization.Unit;
 import pt.ist.fenixframework.FenixFramework;
 
 public abstract class ProjectReportType extends ReportType {
-    private final String projectCode;
+    private String projectCode;
     private final String projectID;
     private Project project;
 

@@ -78,7 +78,11 @@ public class CoordinatorReportType extends ReportType {
         for (Unit unit : directResponsibleUnits) {
             Project project = getProjectFromID(unit.getExternalId());
             if (project != null) {
-                directResponsibleProjectCodes.add(project.getProjectCode());
+                String projectCode = project.getProjectCode();
+                if (projectCode.matches("[a-zA-Z][a-zA-Z]\\d{1,4}")) {
+                    projectCode = projectCode.substring(2);
+                }
+                directResponsibleProjectCodes.add(projectCode);
             }
         }
         String queryProjectInfo = "";
