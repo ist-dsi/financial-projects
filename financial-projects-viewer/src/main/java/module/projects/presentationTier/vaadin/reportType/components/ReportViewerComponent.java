@@ -52,10 +52,8 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
             Class.forName(driverName);
             final String propPrefix = "db.mgp" + getHostPropertyPart();
             SimpleJDBCConnectionPool connectionPool =
-                    new SimpleJDBCConnectionPool(driverName,
-                	    getAlias(propPrefix),
-                	    PropertiesManager.getProperty(propPrefix + ".user"),
-                	    PropertiesManager.getProperty(propPrefix + ".pass"), 2, 5);
+                    new SimpleJDBCConnectionPool(driverName, getAlias(propPrefix), PropertiesManager.getProperty(propPrefix
+                            + ".user"), PropertiesManager.getProperty(propPrefix + ".pass"), 2, 5);
 
             query = new FreeformQuery(queryString, connectionPool);
             reportData = new SQLContainer(query);
@@ -69,15 +67,15 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
         }
     }
 
-    private String getAlias(final String propPrefix) {
-	final String alias = "jdbc:oracle:thin:@//" +  PropertiesManager.getProperty(propPrefix + ".alias");
-	final int i = alias.lastIndexOf(':');
-	return alias.substring(0, i) + '/' + alias.substring(i + 1);
+    public static String getAlias(final String propPrefix) {
+        final String alias = "jdbc:oracle:thin:@//" + PropertiesManager.getProperty(propPrefix + ".alias");
+        final int i = alias.lastIndexOf(':');
+        return alias.substring(0, i) + '/' + alias.substring(i + 1);
     }
 
-    private String getHostPropertyPart() {
-	final String title = VirtualHost.getVirtualHostForThread().getApplicationTitle().getContent();
-	return StringUtils.lowerCase(title);
+    public static String getHostPropertyPart() {
+        final String title = VirtualHost.getVirtualHostForThread().getApplicationTitle().getContent();
+        return StringUtils.lowerCase(title);
     }
 
     public Table getTable() {
