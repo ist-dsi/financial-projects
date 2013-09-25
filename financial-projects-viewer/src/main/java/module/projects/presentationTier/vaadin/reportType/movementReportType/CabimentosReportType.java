@@ -1,5 +1,7 @@
 package module.projects.presentationTier.vaadin.reportType.movementReportType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.reportType.MovementsReportType;
@@ -55,4 +57,47 @@ public class CabimentosReportType extends MovementsReportType {
         return "Execuções";
     }
 
+    @Override
+    protected List<String> getChildQueryColumnsPresentationNames() {
+        List<String> columnsPresentationNames = new ArrayList<String>();
+        columnsPresentationNames.add(getMessage("financialprojectsreports.column.id"));
+        columnsPresentationNames.add(getMessage("financialprojectsreports.column.rubric"));
+        columnsPresentationNames.add(getMessage("financialprojectsreports.column.type"));
+        columnsPresentationNames.add(getMessage("financialprojectsreports.column.date"));
+        columnsPresentationNames.add(getMessage("financialprojectsreports.column.description"));
+        columnsPresentationNames.add(getMessage("financialprojectsreports.column.value"));
+        columnsPresentationNames.add(getMessage("financialprojectsreports.column.iva"));
+        return columnsPresentationNames;
+    }
+
+    @Override
+    protected List<String> getChildQueryColumns() {
+        List<String> columns = new ArrayList<String>();
+        columns.add("\"FILHO_IDMOV\"");
+        columns.add("\"FILHO_IDRUB\"");
+        columns.add("\"FILHO_TIPO\"");
+        columns.add("TO_CHAR(\"FILHO_DATA\",'YYYY-MM-DD') as DATA");
+        columns.add("\"FILHO_DESCRICAO\"");
+        columns.add("\"FILHO_VALOR\"");
+        columns.add("\"FILHO_IVA\"");
+        return columns;
+    }
+
+    protected List<String> getChildResultColumns() {
+
+        List<String> columns = new ArrayList<String>();
+        columns.add("FILHO_IDMOV");
+        columns.add("FILHO_IDRUB");
+        columns.add("FILHO_TIPO");
+        columns.add("DATA");
+        columns.add("FILHO_DESCRICAO");
+        columns.add("FILHO_VALOR");
+        columns.add("FILHO_IVA");
+        return columns;
+    }
+
+    @Override
+    protected String getChildQueryTableName() {
+        return "\"V_MOV_CABIMENTOS\"";
+    }
 }
