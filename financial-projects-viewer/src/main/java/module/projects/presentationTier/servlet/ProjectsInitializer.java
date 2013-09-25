@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebListener;
 
 import module.projects.presentationTier.vaadin.reportType.ReportType;
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
+import pt.ist.bennu.core.domain.RoleType;
 import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.expenditureTrackingSystem.domain.ExpenditureTrackingSystem;
 import pt.ist.expenditureTrackingSystem.domain.organization.Person;
@@ -43,7 +44,8 @@ public class ProjectsInitializer implements ServletContextListener {
 
                 Unit unit = (Unit) object;
                 Person currentUser = UserView.getCurrentUser().getExpenditurePerson();
-                if (!(unit.isResponsible(currentUser) || unit.getObserversSet().contains(currentUser))) {
+                if (!(unit.isResponsible(currentUser) || unit.getObserversSet().contains(currentUser) || UserView
+                        .getCurrentUser().hasRoleType(RoleType.MANAGER))) {
                     return null;
                 }
 
@@ -79,12 +81,14 @@ public class ProjectsInitializer implements ServletContextListener {
                 }
                 Person person = (Person) object;
 
-                if (!UserView.getCurrentUser().getExpenditurePerson().equals(person)) {
+                if (!(UserView.getCurrentUser().getExpenditurePerson().equals(person) || UserView.getCurrentUser().hasRoleType(
+                        RoleType.MANAGER))) {
                     return null;
                 }
                 map = new HashMap<String, String>();
                 map.put(getMessage("financialprojectsreports.infoProvider.coordinatorSummary"),
-                        "/vaadinContext.do?method=forwardToVaadin#projectsService?reportType=" + ReportType.SUMMARY_STRING);
+                        "/vaadinContext.do?method=forwardToVaadin#projectsService?reportType=" + ReportType.SUMMARY_STRING
+                                + "&user=" + person.getUsername());
             }
             return map;
         }
