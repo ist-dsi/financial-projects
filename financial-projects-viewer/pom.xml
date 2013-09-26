@@ -1,56 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>pt.ist</groupId>
-		<artifactId>bennu-project</artifactId>
-		<version>1.1.0</version>
-	</parent>
+    <parent>
+        <groupId>pt.ist</groupId>
+        <artifactId>bennu-project</artifactId>
+        <version>1.1.0</version>
+    </parent>
 
-	<artifactId>projects</artifactId>
-	<version>1.0.0</version>
-	<packaging>jar</packaging>
+    <artifactId>projects</artifactId>
+    <version>1.0.2</version>
+    <packaging>jar</packaging>
 
-	<name>Projects</name>
+    <name>Projects</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.pt.ist.bennu.core>1.1.0</version.pt.ist.bennu.core>
-		<version.pt.ist.bennu.vaadin>1.1.0</version.pt.ist.bennu.vaadin>
-		<version.pt.ist.expenditure.tracking>1.4.0</version.pt.ist.expenditure.tracking>
-	</properties>
+    <scm>
+        <connection>scm:git:git@github.com:ist-dsi/financial-projects.git</connection>
+        <developerConnection>scm:git:git@github.com:ist-dsi/financial-projects.git</developerConnection>
+        <url>http://ist-dsi.github.io/financial-projects</url>
+        <tag>v1.0.2</tag>
+    </scm>
 
-	<organization>
-		<name>Instituto Superior Técnico</name>
-		<url>www.ist.utl.pt</url>
-	</organization>
-	
-	<dependencies>
-		<!--  PLACE YOUR BENNU PROJECT DEPENDENCIES HERE -->
-		<dependency>
-      <groupId>pt.ist</groupId>
-      <artifactId>bennu-core</artifactId>
-      <version>${version.pt.ist.bennu.core}</version>
-    </dependency>
-    <dependency>
-      <groupId>pt.ist</groupId>
-      <artifactId>bennu-vaadin</artifactId>
-      <version>${version.pt.ist.bennu.vaadin}</version>
-    </dependency>
-    <dependency>
-      <groupId>pt.ist</groupId>
-      <artifactId>expenditure-tracking</artifactId>
-      <version>${version.pt.ist.expenditure.tracking}</version>
-    </dependency>
-	</dependencies>
+    <properties>
+        <version.pt.ist.bennu.core>1.1.0</version.pt.ist.bennu.core>
+        <version.pt.ist.bennu.vaadin>1.1.0</version.pt.ist.bennu.vaadin>
+        <version.pt.ist.expenditure.tracking>1.4.0</version.pt.ist.expenditure.tracking>
+    </properties>
 
-	<repositories>
-		<repository>
-			<id>fenix-ashes-maven-repository</id>
-			<url>https://fenix-ashes.ist.utl.pt/nexus/content/groups/fenix-ashes-maven-repository</url>
-		</repository>
-	</repositories>
-	
+    <organization>
+        <name>Instituto Superior Técnico</name>
+        <url>www.ist.utl.pt</url>
+    </organization>
+
+    <dependencies>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>bennu-core</artifactId>
+            <version>${version.pt.ist.bennu.core}</version>
+        </dependency>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>bennu-vaadin</artifactId>
+            <version>${version.pt.ist.bennu.vaadin}</version>
+        </dependency>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>expenditure-tracking</artifactId>
+            <version>${version.pt.ist.expenditure.tracking}</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>fenix-ashes-maven-repository</id>
+            <url>https://fenix-ashes.ist.utl.pt/nexus/content/groups/fenix-ashes-maven-repository</url>
+        </repository>
+    </repositories>
+
 </project>
