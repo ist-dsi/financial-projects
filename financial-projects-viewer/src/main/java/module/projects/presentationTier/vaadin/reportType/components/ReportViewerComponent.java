@@ -1,5 +1,6 @@
 package module.projects.presentationTier.vaadin.reportType.components;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import module.projects.presentationTier.vaadin.Reportable;
@@ -96,8 +97,13 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
             for (Object propertyID : i.getItemPropertyIds()) {
                 cell = row.createCell(cellNum++);
                 Object value = i.getItemProperty(propertyID).getValue();
+
                 if (value != null) {
-                    cell.setCellValue(value.toString());
+                    if (value instanceof BigDecimal) {
+                        cell.setCellFormula("VALUE(\"" + value.toString() + "\")");
+                    } else {
+                        cell.setCellValue(value.toString());
+                    }
                 }
             }
         }
