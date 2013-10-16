@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import module.projects.presentationTier.vaadin.IllegalAccessException;
 import module.projects.presentationTier.vaadin.reportType.components.CoordinatorHeaderComponent;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
 import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
@@ -12,6 +13,8 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
+import pt.ist.bennu.core.domain.RoleType;
+import pt.ist.bennu.core.domain.User;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 import pt.ist.expenditureTrackingSystem.domain.organization.SubProject;
 import pt.ist.expenditureTrackingSystem.domain.organization.Unit;
@@ -25,14 +28,20 @@ public class CoordinatorReportType extends ReportType {
     final ReportViewerComponent reportViewer;
     TableSummaryComponent summary;
     CoordinatorHeaderComponent header;
+    User user;
 
     protected CoordinatorReportType(Map<String, String> args) {
         super(args);
+        user = User.findByUsername(args.get("user"));
+
+        if (!(UserView.getCurrentUser().equals(user) || UserView.getCurrentUser().hasRoleType(RoleType.MANAGER))) {
+            throw new IllegalAccessException();
+        }
         Panel panel = new Panel();
         addComponent(new Label("<b>" + getLabel() + "</b>", Label.CONTENT_XHTML));
         String query = getQuery();
         if (query != null) {
-            header = new CoordinatorHeaderComponent(UserView.getCurrentUser().getPresentationName(), getLabel());
+            header = new CoordinatorHeaderComponent(user.getPresentationName(), getLabel());
 
             addComponent(header);
             reportViewer = new ReportViewerComponent(query, getCustomFormatter());
@@ -71,14 +80,18 @@ public class CoordinatorReportType extends ReportType {
 
     @Override
     public String getQuery() {
-        List<Unit> directResponsibleUnits = UserView.getCurrentUser().getExpenditurePerson().getDirectResponsibleUnits();
+        List<Unit> directResponsibleUnits = user.getExpenditurePerson().getDirectResponsibleUnits();
         directResponsibleUnits.addAll(UserView.getCurrentUser().getExpenditurePerson().getObservableUnitsSet());
 
         List<String> directResponsibleProjectCodes = new LinkedList<String>();
         for (Unit unit : directResponsibleUnits) {
             Project project = getProjectFromID(unit.getExternalId());
             if (project != null) {
-                directResponsibleProjectCodes.add(project.getProjectCode());
+                String projectCode = project.getProjectCode();
+                if (projectCode.matches("[a-zA-Z][a-zA-Z]\\d{1,4}")) {
+                    projectCode = projectCode.substring(2);
+                }
+                directResponsibleProjectCodes.add(projectCode);
             }
         }
         String queryProjectInfo = "";

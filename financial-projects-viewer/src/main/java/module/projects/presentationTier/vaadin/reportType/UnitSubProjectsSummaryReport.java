@@ -13,6 +13,7 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
+import pt.ist.bennu.core.domain.RoleType;
 import pt.ist.expenditureTrackingSystem.domain.organization.Person;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 import pt.ist.expenditureTrackingSystem.domain.organization.Unit;
@@ -36,7 +37,9 @@ public class UnitSubProjectsSummaryReport extends ReportType {
         unitID = args.get("unit");
         Unit unit = FenixFramework.getDomainObject(unitID);
         Person currentUser = UserView.getCurrentUser().getExpenditurePerson();
-        if (unit.isProject() || !(unit.isResponsible(currentUser) || unit.getObserversSet().contains(currentUser))) {
+        if (unit.isProject()
+                || !(unit.isResponsible(currentUser) || unit.getObserversSet().contains(currentUser) || currentUser.getUser()
+                        .hasRoleType(RoleType.MANAGER))) {
             throw new IllegalAccessException();
         }
 
@@ -44,7 +47,11 @@ public class UnitSubProjectsSummaryReport extends ReportType {
             if (subUnit instanceof Project) {
                 Project project = (Project) subUnit;
                 if (!project.hasResponsiblesInUnit()) {
-                    projectCodes.add(project.getProjectCode());
+                    String projectCode = project.getProjectCode();
+                    if (projectCode.matches("[a-zA-Z][a-zA-Z]\\d{1,4}")) {
+                        projectCode = projectCode.substring(2);
+                    }
+                    projectCodes.add(projectCode);
                 }
             }
         }

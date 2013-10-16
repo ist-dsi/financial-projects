@@ -5,7 +5,6 @@
 package module.projects.presentationTier.vaadin.reportType;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.IllegalAccessException;
@@ -72,6 +71,7 @@ public abstract class ReportType implements Reportable {
     private final VerticalLayout layout;
     ProjectHeaderComponent header;
     private boolean headerVisibility;
+    private final Map<String, String> args;
 
     public Component getComponent() {
         return layout;
@@ -135,7 +135,7 @@ public abstract class ReportType implements Reportable {
         layout = new VerticalLayout();
         layout.setHeight("100%");
         layout.setSpacing(true);
-
+        this.args = args;
     }
 
     public abstract String getQuery();
@@ -156,8 +156,7 @@ public abstract class ReportType implements Reportable {
 
     }
 
-    protected HashMap<String, String> getArgs() {
-        HashMap<String, String> args = new HashMap<String, String>();
+    protected Map<String, String> getArgs() {
         return args;
     }
 
