@@ -101,7 +101,11 @@ public abstract class MovementsReportType extends ProjectReportType {
                 Property p = item.getItemProperty(propertyId);
                 cell = row.createCell(i++);
                 if (p.getValue() instanceof BigDecimal) {
-                    cell.setCellFormula("VALUE(\"" + p.getValue().toString() + "\")");
+                    String englishFormula = "VALUE(\"" + p.getValue().toString() + "\")";
+                    String portugueseFormula = "VALUE(\"" + p.getValue().toString().replace(".", ",") + "\")";
+                    cell.setCellFormula("IF(ISERROR(" + portugueseFormula + "), " + englishFormula + ", " + portugueseFormula
+                            + ")");
+
                 } else {
                     cell.setCellValue(p.getValue().toString());
                 }
@@ -127,7 +131,10 @@ public abstract class MovementsReportType extends ProjectReportType {
                     cell = row.createCell(cellCount++);
                     if (s != null) {
                         if (s instanceof BigDecimal) {
-                            cell.setCellFormula("VALUE(\"" + s.toString() + "\")");
+                            String englishFormula = "VALUE(\"" + s.toString() + "\")";
+                            String portugueseFormula = "VALUE(\"" + s.toString().replace(".", ",") + "\")";
+                            cell.setCellFormula("IF(ISERROR(" + portugueseFormula + "), " + englishFormula + ", "
+                                    + portugueseFormula + ")");
                         } else {
                             cell.setCellValue(s.toString());
                         }

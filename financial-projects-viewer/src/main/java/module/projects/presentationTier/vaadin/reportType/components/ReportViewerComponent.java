@@ -100,7 +100,10 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
 
                 if (value != null) {
                     if (value instanceof BigDecimal) {
-                        cell.setCellFormula("VALUE(\"" + value.toString() + "\")");
+                        String englishFormula = "VALUE(\"" + value.toString() + "\")";
+                        String portugueseFormula = "VALUE(\"" + value.toString().replace(".", ",") + "\")";;
+                        cell.setCellFormula("IF(ISERROR(" + portugueseFormula + "), " + englishFormula + ", " + portugueseFormula
+                                + ")");
                     } else {
                         cell.setCellValue(value.toString());
                     }
