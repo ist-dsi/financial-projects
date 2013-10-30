@@ -18,7 +18,7 @@ public class AdiantamentosDetailsReportType extends MovementsDetailsReportType {
     public String getQuery() {
         // TODO Auto-generated method stub
         return "select distinct \"FILHO_IDMOV\", \"FILHO_IDRUB\", \"FILHO_TIPO\", \"FILHO_DATA\", \"FILHO_DESCRICAO\", \"FILHO_VALOR\", \"FILHO_IVA\", \"FILHO_VALOR\" + \"FILHO_IVA\" as TOTAL from \"V_MOV_ADIANTAMENTOS\" where \"PAI_IDPROJ\"='"
-                + getProjectCode() + "' AND \"PAI_IDMOV\"='" + getParentId() + "'";
+                + getProjectCode() + "' AND \"PAI_IDMOV\"='" + getParentId() + "' order by \"FILHO_DATA\"";
     }
 
     @Override

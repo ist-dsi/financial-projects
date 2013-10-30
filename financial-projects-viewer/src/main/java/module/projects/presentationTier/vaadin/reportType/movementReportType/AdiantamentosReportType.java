@@ -22,7 +22,7 @@ public class AdiantamentosReportType extends MovementsReportType {
     public String getQuery() {
         return "select distinct \"PAI_IDMOV\", \"PAI_IDRUB\", \"PAI_TIPO\", TO_CHAR(\"PAI_DATA\",'YYYY-MM-DD') as DATA, \"PAI_DESCRICAO\", \"PAI_VALOR_TOTAL\", SUM(\"FILHO_VALOR\") + SUM(\"FILHO_IVA\") as EXECUTED, (\"PAI_VALOR_TOTAL\" - SUM(\"FILHO_VALOR\") - SUM(\"FILHO_IVA\")) as MISSING from \"V_MOV_ADIANTAMENTOS\" where \"PAI_IDPROJ\"='"
                 + getProjectCode()
-                + "' group by \"PAI_IDMOV\", \"PAI_IDRUB\", \"PAI_TIPO\", \"PAI_DATA\", \"PAI_DESCRICAO\", \"PAI_VALOR_TOTAL\"";
+                + "' group by \"PAI_IDMOV\", \"PAI_IDRUB\", \"PAI_TIPO\", \"PAI_DATA\", \"PAI_DESCRICAO\", \"PAI_VALOR_TOTAL\" order by DATA";
 
     }
 
@@ -87,6 +87,7 @@ public class AdiantamentosReportType extends MovementsReportType {
         return columns;
     }
 
+    @Override
     protected List<String> getChildResultColumns() {
 
         List<String> columns = new ArrayList<String>();
@@ -104,5 +105,10 @@ public class AdiantamentosReportType extends MovementsReportType {
     @Override
     protected String getChildQueryTableName() {
         return "\"V_MOV_ADIANTAMENTOS\"";
+    }
+
+    @Override
+    protected String getOrderColumn() {
+        return "\"FILHO_DATA\"";
     }
 }

@@ -161,6 +161,7 @@ public abstract class MovementsReportType extends ProjectReportType {
 
         //Add table name and where clause
         query += "from " + getChildQueryTableName() + " where \"PAI_IDPROJ\"='" + getProjectCode() + "'";
+        query += "order by " + getOrderColumn();
 
         //Maps PAI_IDMOV to list of children. Each children is represented as a list of attributes 
 
@@ -198,6 +199,8 @@ public abstract class MovementsReportType extends ProjectReportType {
         }
         return results;
     }
+
+    abstract protected String getOrderColumn();
 
     abstract protected List<String> getChildQueryColumnsPresentationNames();
 
