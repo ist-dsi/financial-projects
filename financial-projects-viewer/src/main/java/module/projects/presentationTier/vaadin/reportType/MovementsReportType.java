@@ -29,7 +29,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 
 public abstract class MovementsReportType extends ProjectReportType {
-    ReportViewerComponent reportViewer;
+    final ReportViewerComponent reportViewer;
     TableSummaryComponent tableSummary;
 
     public MovementsReportType(Map<String, String> args) {
@@ -52,6 +52,7 @@ public abstract class MovementsReportType extends ProjectReportType {
                                 new Link(getMessage("financialprojectsreports.movements.column.details"), new ExternalResource(
                                         "#projectsService?reportType=" + getChildReportName() + "&unit=" + getProjectID()
                                                 + "&PAI_IDMOV=" + paiIDMOV));
+                        detailsLink.setTargetName("_blank");
                         //line.addItemProperty(columnId, new ObjectProperty<Link>(detailsLink));
                         return detailsLink;
                     }
