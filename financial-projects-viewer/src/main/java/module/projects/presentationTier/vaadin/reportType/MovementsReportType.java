@@ -1,5 +1,6 @@
 package module.projects.presentationTier.vaadin.reportType;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -79,7 +80,7 @@ public abstract class MovementsReportType extends ProjectReportType {
 
         Table t = reportViewer.getTable();
 
-        HashMap<String, ArrayList<ArrayList<String>>> results = loadChildrenData();
+        HashMap<String, ArrayList<ArrayList<Object>>> results = loadChildrenData();
 
         for (Object itemId : t.getItemIds()) {
             Item item = t.getItem(itemId);
@@ -99,7 +100,15 @@ public abstract class MovementsReportType extends ProjectReportType {
             for (Object propertyId : item.getItemPropertyIds()) {
                 Property p = item.getItemProperty(propertyId);
                 cell = row.createCell(i++);
-                cell.setCellValue(p.getValue().toString());
+                if (p.getValue() instanceof BigDecimal) {
+                    String englishFormula = "VALUE(\"" + p.getValue().toString() + "\")";
+                    String portugueseFormula = "VALUE(\"" + p.getValue().toString().replace(".", ",") + "\")";
+                    cell.setCellFormula("IF(ISERROR(" + portugueseFormula + "), " + englishFormula + ", " + portugueseFormula
+                            + ")");
+
+                } else {
+                    cell.setCellValue(p.getValue().toString());
+                }
             }
 
             rowNum++;
@@ -115,12 +124,21 @@ public abstract class MovementsReportType extends ProjectReportType {
                 cell.setCellStyle(style);
                 cell.setCellValue(s);
             }
-            for (ArrayList<String> entry : results.get(parentID)) {
+            for (ArrayList<Object> entry : results.get(parentID)) {
                 row = sheet.createRow(rowNum++);
                 cellCount = 0;
-                for (String s : entry) {
+                for (Object s : entry) {
                     cell = row.createCell(cellCount++);
-                    cell.setCellValue(s);
+                    if (s != null) {
+                        if (s instanceof BigDecimal) {
+                            String englishFormula = "VALUE(\"" + s.toString() + "\")";
+                            String portugueseFormula = "VALUE(\"" + s.toString().replace(".", ",") + "\")";
+                            cell.setCellFormula("IF(ISERROR(" + portugueseFormula + "), " + englishFormula + ", "
+                                    + portugueseFormula + ")");
+                        } else {
+                            cell.setCellValue(s.toString());
+                        }
+                    }
                 }
             }
         }
@@ -129,8 +147,8 @@ public abstract class MovementsReportType extends ProjectReportType {
                 .setCellValue(getMessage("financialprojectsreports.expensescalculationwarning"));
     }
 
-    private HashMap<String, ArrayList<ArrayList<String>>> loadChildrenData() {
-        HashMap<String, ArrayList<ArrayList<String>>> results = new HashMap<>();
+    private HashMap<String, ArrayList<ArrayList<Object>>> loadChildrenData() {
+        HashMap<String, ArrayList<ArrayList<Object>>> results = new HashMap<>();
         String query = "select distinct";
         //Add columns names to query
         query += "\"PAI_IDMOV\", ";
@@ -161,16 +179,16 @@ public abstract class MovementsReportType extends ProjectReportType {
 
             while (rs.next()) {
                 String parentId = rs.getString("PAI_IDMOV");
-                ArrayList<ArrayList<String>> parentEntry = results.get(parentId);
+                ArrayList<ArrayList<Object>> parentEntry = results.get(parentId);
                 if (parentEntry == null) {
-                    parentEntry = new ArrayList<ArrayList<String>>();
+                    parentEntry = new ArrayList<ArrayList<Object>>();
                     results.put(parentId, parentEntry);
                 }
-                ArrayList<String> currentdata = new ArrayList<String>();
+                ArrayList<Object> currentdata = new ArrayList<Object>();
                 parentEntry.add(currentdata);
 
                 for (String columnName : getChildResultColumns()) {
-                    currentdata.add(rs.getString(columnName));
+                    currentdata.add(rs.getObject(columnName));
                 }
             }
             con.close();
