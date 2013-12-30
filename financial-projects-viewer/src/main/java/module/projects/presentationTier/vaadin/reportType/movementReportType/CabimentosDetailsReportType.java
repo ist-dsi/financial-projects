@@ -17,7 +17,7 @@ public class CabimentosDetailsReportType extends MovementsDetailsReportType {
     public String getQuery() {
         // TODO Auto-generated method stub
         return "select distinct \"FILHO_IDMOV\", \"FILHO_IDRUB\", \"FILHO_TIPO\", TO_CHAR(\"FILHO_DATA\",'YYYY-MM-DD') as DATA, \"FILHO_DESCRICAO\", \"FILHO_VALOR\", \"FILHO_IVA\" from \"V_MOV_CABIMENTOS\" where \"PAI_IDPROJ\"='"
-                + getProjectCode() + "' AND \"PAI_IDMOV\"='" + getParentId() + "'";
+                + getProjectCode() + "' AND \"PAI_IDMOV\"='" + getParentId() + "' order by DATA";
 
     }
 
