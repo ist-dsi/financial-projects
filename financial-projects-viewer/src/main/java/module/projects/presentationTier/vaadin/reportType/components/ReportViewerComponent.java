@@ -59,12 +59,51 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
             query = new FreeformQuery(queryString, connectionPool);
             reportData = new SQLContainer(query);
             viewTable = new Table();
+
+            setCurrencyFormat();
+
             viewTable.setContainerDataSource(reportData);
+
+            setNumberRightAlignment();
+
             viewTable.setEditable(false);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void setNumberRightAlignment() {
+        for (Object itemId : viewTable.getItemIds()) {
+            Item i = viewTable.getItem(itemId);
+            for (Object propertyID : i.getItemPropertyIds()) {
+                Object value = i.getItemProperty(propertyID).getValue();
+                if (value != null) {
+                    if (value instanceof BigDecimal) {
+                        viewTable.setColumnAlignment(propertyID, Table.ALIGN_RIGHT);
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+
+    private void setCurrencyFormat() {
+        for (Object itemId : reportData.getItemIds()) {
+            Item i = reportData.getItem(itemId);
+            for (Object propertyID : i.getItemPropertyIds()) {
+                Object value = i.getItemProperty(propertyID).getValue();
+                if (value != null) {
+                    if (value instanceof BigDecimal) {
+                        BigDecimal number = (BigDecimal) value;
+                        if (!propertyID.toString().equals("Rubrica")) {
+                            number = number.setScale(2, BigDecimal.ROUND_HALF_UP);
+                            reportData.getItem(itemId).getItemProperty(propertyID).setValue(number);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -100,8 +139,12 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
 
                 if (value != null) {
                     if (value instanceof BigDecimal) {
-                        String englishFormula = "VALUE(\"" + value.toString() + "\")";
-                        String portugueseFormula = "VALUE(\"" + value.toString().replace(".", ",") + "\")";;
+                        BigDecimal number = (BigDecimal) value;
+                        if (!propertyID.toString().equals("Rubrica")) {
+                            number = number.setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }
+                        String englishFormula = "VALUE(\"" + number.toString() + "\")";
+                        String portugueseFormula = "VALUE(\"" + number.toString().replace(".", ",") + "\")";;
                         cell.setCellFormula("IF(ISERROR(" + portugueseFormula + "), " + englishFormula + ", " + portugueseFormula
                                 + ")");
                     } else {

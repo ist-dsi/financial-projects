@@ -51,6 +51,7 @@ public class TableSummaryComponent extends CustomComponent implements Reportable
             subLayout.addComponent(new Label("<b>" + table.getColumnHeader(collumn).toString() + totalString + " :</b> " + result
                     + "€", Label.CONTENT_XHTML));
             columns.add(table.getColumnHeader(collumn).toString());
+            result = result.setScale(2, BigDecimal.ROUND_HALF_UP);
             results.add(result.toString());
         }
         layout.addComponent(subLayout);
