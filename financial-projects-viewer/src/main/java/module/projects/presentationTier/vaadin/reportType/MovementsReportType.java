@@ -102,8 +102,12 @@ public abstract class MovementsReportType extends ProjectReportType {
                 Property p = item.getItemProperty(propertyId);
                 cell = row.createCell(i++);
                 if (p.getValue() instanceof BigDecimal) {
-                    String englishFormula = "VALUE(\"" + p.getValue().toString() + "\")";
-                    String portugueseFormula = "VALUE(\"" + p.getValue().toString().replace(".", ",") + "\")";
+                    BigDecimal number = (BigDecimal) p.getValue();
+                    if (!propertyId.toString().equals("Rubrica")) {
+                        number = number.setScale(2, BigDecimal.ROUND_HALF_UP);
+                    }
+                    String englishFormula = "VALUE(\"" + number.toString() + "\")";
+                    String portugueseFormula = "VALUE(\"" + number.toString().replace(".", ",") + "\")";
                     cell.setCellFormula("IF(ISERROR(" + portugueseFormula + "), " + englishFormula + ", " + portugueseFormula
                             + ")");
 
