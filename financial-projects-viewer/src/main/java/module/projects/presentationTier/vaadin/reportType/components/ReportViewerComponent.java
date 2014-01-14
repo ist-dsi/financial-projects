@@ -68,6 +68,7 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
                 protected String formatPropertyValue(Object rowId, Object colId, com.vaadin.data.Property property) {
 
                     String columnHeader = colId.toString().toLowerCase();
+                    System.out.println("Column id: " + columnHeader);
 
                     if (isCurrencyColumn(columnHeader)) {
 
@@ -92,7 +93,8 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
                     return columnHeader.equals("iva") || columnHeader.equals("valor") || columnHeader.equals("total")
                             || columnHeader.equals("executado") || columnHeader.equals("value") || columnHeader.equals("saldo")
                             || columnHeader.equals("orçamentado") || columnHeader.equals("pai_valor_total")
-                            || columnHeader.equals("total_execucoes") || columnHeader.equals("execucoes_em_falta");
+                            || columnHeader.equals("total_execucoes") || columnHeader.equals("execucoes_em_falta")
+                            || columnHeader.equals("executed") || columnHeader.equals("missing");
                 };
             };
 
