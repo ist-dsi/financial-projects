@@ -98,8 +98,6 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
                 };
             };
 
-//            setCurrencyFormat();
-
             viewTable.setContainerDataSource(reportData);
 
             setNumberRightAlignment();
