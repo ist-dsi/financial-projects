@@ -2,6 +2,10 @@ package module.projects.presentationTier.vaadin.reportType.components;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import module.projects.presentationTier.vaadin.Reportable;
 import module.projects.presentationTier.vaadin.reportType.ReportType;
@@ -58,9 +62,41 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
 
             query = new FreeformQuery(queryString, connectionPool);
             reportData = new SQLContainer(query);
-            viewTable = new Table();
+            viewTable = new Table() {
 
-            setCurrencyFormat();
+                @Override
+                protected String formatPropertyValue(Object rowId, Object colId, com.vaadin.data.Property property) {
+
+                    String columnHeader = colId.toString().toLowerCase();
+                    System.out.println("Column id: " + columnHeader);
+
+                    if (isCurrencyColumn(columnHeader)) {
+
+                        BigDecimal v = (BigDecimal) property.getValue();
+                        v = v.setScale(2, BigDecimal.ROUND_HALF_UP);
+
+                        DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+                        DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+
+                        symbols.setGroupingSeparator('.');
+                        symbols.setDecimalSeparator(',');
+                        formatter.setDecimalFormatSymbols(symbols);
+                        formatter.setMinimumFractionDigits(2);
+                        return formatter.format(v.doubleValue());
+                    }
+
+                    return super.formatPropertyValue(rowId, colId, property);
+
+                }
+
+                private boolean isCurrencyColumn(String columnHeader) {
+                    return columnHeader.equals("iva") || columnHeader.equals("valor") || columnHeader.equals("total")
+                            || columnHeader.equals("executado") || columnHeader.equals("value") || columnHeader.equals("saldo")
+                            || columnHeader.equals("orçamentado") || columnHeader.equals("pai_valor_total")
+                            || columnHeader.equals("total_execucoes") || columnHeader.equals("execucoes_em_falta")
+                            || columnHeader.equals("executed") || columnHeader.equals("missing");
+                };
+            };
 
             viewTable.setContainerDataSource(reportData);
 
@@ -100,6 +136,7 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
                         if (!propertyID.toString().equals("Rubrica")) {
                             number = number.setScale(2, BigDecimal.ROUND_HALF_UP);
                             reportData.getItem(itemId).getItemProperty(propertyID).setValue(number);
+
                         }
                     }
                 }

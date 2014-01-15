@@ -144,8 +144,9 @@ public class ExpensesReportType extends ProjectReportType {
         Layout layout = new VerticalLayout();
         Item item = t.getItem(t.getItemIds().toArray()[0]);
         for (Object column : item.getItemPropertyIds()) {
-            layout.addComponent(new Label("<b>" + t.getColumnHeader(column) + " " + tableName + ":</b> "
-                    + item.getItemProperty(column).toString(), Label.CONTENT_XHTML));
+            String itemString = formatCurrency(item.getItemProperty(column).toString());
+            layout.addComponent(new Label("<b>" + t.getColumnHeader(column) + " " + tableName + ":</b> " + itemString,
+                    Label.CONTENT_XHTML));
         }
         return layout;
     }
