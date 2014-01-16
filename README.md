@@ -10,6 +10,10 @@ of that nature.
 
 ### On Develop
 
+### v1.1.0
+
+	Fixed multiple bugs including closing db transactions.
+
 
 ### v1.0.0
 

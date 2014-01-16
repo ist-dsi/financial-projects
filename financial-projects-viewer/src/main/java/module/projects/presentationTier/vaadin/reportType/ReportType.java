@@ -5,6 +5,10 @@
 package module.projects.presentationTier.vaadin.reportType;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Map;
 
 import module.projects.presentationTier.vaadin.IllegalAccessException;
@@ -127,6 +131,16 @@ public abstract class ReportType implements Reportable {
         } catch (IllegalAccessException e) {
             return null;
         }
+    }
+
+    public static String formatCurrency(String string) {
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+        DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+
+        symbols.setGroupingSeparator(' ');
+        formatter.setDecimalFormatSymbols(symbols);
+        formatter.setMinimumFractionDigits(2);
+        return formatter.format(Double.parseDouble(string));
     }
 
     public abstract String getLabel();

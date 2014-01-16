@@ -2,6 +2,10 @@ package module.projects.presentationTier.vaadin.reportType.components;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import module.projects.presentationTier.vaadin.Reportable;
 import module.projects.presentationTier.vaadin.reportType.ReportType;
@@ -58,13 +62,85 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
 
             query = new FreeformQuery(queryString, connectionPool);
             reportData = new SQLContainer(query);
-            viewTable = new Table();
+            viewTable = new Table() {
+
+                @Override
+                protected String formatPropertyValue(Object rowId, Object colId, com.vaadin.data.Property property) {
+
+                    String columnHeader = colId.toString().toLowerCase();
+                    System.out.println("Column id: " + columnHeader);
+
+                    if (isCurrencyColumn(columnHeader)) {
+
+                        BigDecimal v = (BigDecimal) property.getValue();
+                        v = v.setScale(2, BigDecimal.ROUND_HALF_UP);
+
+                        DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+                        DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+
+                        symbols.setGroupingSeparator('.');
+                        symbols.setDecimalSeparator(',');
+                        formatter.setDecimalFormatSymbols(symbols);
+                        formatter.setMinimumFractionDigits(2);
+                        return formatter.format(v.doubleValue());
+                    }
+
+                    return super.formatPropertyValue(rowId, colId, property);
+
+                }
+
+                private boolean isCurrencyColumn(String columnHeader) {
+                    return columnHeader.equals("iva") || columnHeader.equals("valor") || columnHeader.equals("total")
+                            || columnHeader.equals("executado") || columnHeader.equals("value") || columnHeader.equals("saldo")
+                            || columnHeader.equals("orçamentado") || columnHeader.equals("pai_valor_total")
+                            || columnHeader.equals("total_execucoes") || columnHeader.equals("execucoes_em_falta")
+                            || columnHeader.equals("executed") || columnHeader.equals("missing");
+                };
+            };
+
             viewTable.setContainerDataSource(reportData);
+
+            setNumberRightAlignment();
+
             viewTable.setEditable(false);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void setNumberRightAlignment() {
+        for (Object itemId : viewTable.getItemIds()) {
+            Item i = viewTable.getItem(itemId);
+            for (Object propertyID : i.getItemPropertyIds()) {
+                Object value = i.getItemProperty(propertyID).getValue();
+                if (value != null) {
+                    if (value instanceof BigDecimal) {
+                        viewTable.setColumnAlignment(propertyID, Table.ALIGN_RIGHT);
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+
+    private void setCurrencyFormat() {
+        for (Object itemId : reportData.getItemIds()) {
+            Item i = reportData.getItem(itemId);
+            for (Object propertyID : i.getItemPropertyIds()) {
+                Object value = i.getItemProperty(propertyID).getValue();
+                if (value != null) {
+                    if (value instanceof BigDecimal) {
+                        BigDecimal number = (BigDecimal) value;
+                        if (!propertyID.toString().equals("Rubrica")) {
+                            number = number.setScale(2, BigDecimal.ROUND_HALF_UP);
+                            reportData.getItem(itemId).getItemProperty(propertyID).setValue(number);
+
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -100,8 +176,12 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
 
                 if (value != null) {
                     if (value instanceof BigDecimal) {
-                        String englishFormula = "VALUE(\"" + value.toString() + "\")";
-                        String portugueseFormula = "VALUE(\"" + value.toString().replace(".", ",") + "\")";;
+                        BigDecimal number = (BigDecimal) value;
+                        if (!propertyID.toString().equals("Rubrica")) {
+                            number = number.setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }
+                        String englishFormula = "VALUE(\"" + number.toString() + "\")";
+                        String portugueseFormula = "VALUE(\"" + number.toString().replace(".", ",") + "\")";;
                         cell.setCellFormula("IF(ISERROR(" + portugueseFormula + "), " + englishFormula + ", " + portugueseFormula
                                 + ")");
                     } else {

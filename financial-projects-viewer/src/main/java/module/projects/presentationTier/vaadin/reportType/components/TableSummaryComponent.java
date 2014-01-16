@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import module.projects.presentationTier.vaadin.Reportable;
+import module.projects.presentationTier.vaadin.reportType.ReportType;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -48,9 +49,10 @@ public class TableSummaryComponent extends CustomComponent implements Reportable
                 result = result.add((BigDecimal) value);
             }
 
-            subLayout.addComponent(new Label("<b>" + table.getColumnHeader(collumn).toString() + totalString + " :</b> " + result
-                    + "€", Label.CONTENT_XHTML));
+            subLayout.addComponent(new Label("<b>" + table.getColumnHeader(collumn).toString() + totalString + " :</b> "
+                    + ReportType.formatCurrency(result.toString()) + "€", Label.CONTENT_XHTML));
             columns.add(table.getColumnHeader(collumn).toString());
+            result = result.setScale(2, BigDecimal.ROUND_HALF_UP);
             results.add(result.toString());
         }
         layout.addComponent(subLayout);

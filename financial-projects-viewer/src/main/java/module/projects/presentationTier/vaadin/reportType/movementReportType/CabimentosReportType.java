@@ -27,7 +27,7 @@ public class CabimentosReportType extends MovementsReportType {
     public String getQuery() {
         return "select \"PAI_IDMOV\", \"PAI_IDRUB\", \"PAI_TIPO\", TO_CHAR(\"PAI_DATA\",'YYYY-MM-DD') as DATA, \"PAI_DESCRICAO\", \"PAI_VALOR_TOTAL\",SUM(FILHO_VALOR) + SUM(FILHO_IVA) as TOTAL_EXECUCOES, \"PAI_VALOR_TOTAL\" - SUM(FILHO_VALOR) - SUM(FILHO_IVA) EXECUCOES_EM_FALTA from \"V_MOV_CABIMENTOS\" where \"PAI_IDPROJ\"='"
                 + getProjectCode()
-                + "' group by \"PAI_IDMOV\", \"PAI_TIPO\", \"PAI_IDPROJ\", \"PAI_IDRUB\", \"PAI_DATA\", \"PAI_DESCRICAO\", \"PAI_VALOR_TOTAL\"";
+                + "' group by \"PAI_IDMOV\", \"PAI_TIPO\", \"PAI_IDPROJ\", \"PAI_IDRUB\", \"PAI_DATA\", \"PAI_DESCRICAO\", \"PAI_VALOR_TOTAL\" order by DATA";
     }
 
     @Override
@@ -83,6 +83,7 @@ public class CabimentosReportType extends MovementsReportType {
         return columns;
     }
 
+    @Override
     protected List<String> getChildResultColumns() {
 
         List<String> columns = new ArrayList<String>();
@@ -99,5 +100,10 @@ public class CabimentosReportType extends MovementsReportType {
     @Override
     protected String getChildQueryTableName() {
         return "\"V_MOV_CABIMENTOS\"";
+    }
+
+    @Override
+    protected String getOrderColumn() {
+        return "DATA";
     }
 }
