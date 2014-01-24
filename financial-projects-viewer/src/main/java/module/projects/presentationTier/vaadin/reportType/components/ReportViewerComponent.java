@@ -125,25 +125,6 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
         }
     }
 
-    private void setCurrencyFormat() {
-        for (Object itemId : reportData.getItemIds()) {
-            Item i = reportData.getItem(itemId);
-            for (Object propertyID : i.getItemPropertyIds()) {
-                Object value = i.getItemProperty(propertyID).getValue();
-                if (value != null) {
-                    if (value instanceof BigDecimal) {
-                        BigDecimal number = (BigDecimal) value;
-                        if (!propertyID.toString().equals("Rubrica")) {
-                            number = number.setScale(2, BigDecimal.ROUND_HALF_UP);
-                            reportData.getItem(itemId).getItemProperty(propertyID).setValue(number);
-
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public static String getAlias(final String propPrefix) {
         final String alias = "jdbc:oracle:thin:@//" + PropertiesManager.getProperty(propPrefix + ".alias");
         final int i = alias.lastIndexOf(':');

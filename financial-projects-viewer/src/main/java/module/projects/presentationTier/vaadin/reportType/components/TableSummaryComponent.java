@@ -2,7 +2,9 @@ package module.projects.presentationTier.vaadin.reportType.components;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import module.projects.presentationTier.vaadin.Reportable;
 import module.projects.presentationTier.vaadin.reportType.ReportType;
@@ -81,5 +83,13 @@ public class TableSummaryComponent extends CustomComponent implements Reportable
     @Override
     public void setStyleName(String styleName) {
         subLayout.setStyleName(styleName);
+    }
+
+    public Map<String, String> getResults() {
+        Map<String, String> toReturn = new HashMap<String, String>();
+        for (int i = 0; i < results.size(); i++) {
+            toReturn.put(columns.get(i), results.get(i));
+        }
+        return toReturn;
     }
 }
