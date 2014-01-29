@@ -60,15 +60,12 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
                     new SimpleJDBCConnectionPool(driverName, getAlias(propPrefix), PropertiesManager.getProperty(propPrefix
                             + ".user"), PropertiesManager.getProperty(propPrefix + ".pass"), 2, 5);
 
-            query = new FreeformQuery(queryString, connectionPool);
-            reportData = new SQLContainer(query);
             viewTable = new Table() {
 
                 @Override
                 protected String formatPropertyValue(Object rowId, Object colId, com.vaadin.data.Property property) {
 
                     String columnHeader = colId.toString().toLowerCase();
-                    System.out.println("Column id: " + columnHeader);
 
                     if (isCurrencyColumn(columnHeader)) {
 
@@ -97,6 +94,9 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
                             || columnHeader.equals("executed") || columnHeader.equals("missing");
                 };
             };
+
+            query = new FreeformQuery(queryString, connectionPool);
+            reportData = new SQLContainer(query);
 
             viewTable.setContainerDataSource(reportData);
 

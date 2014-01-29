@@ -12,7 +12,6 @@ import javax.servlet.annotation.WebListener;
 import module.projects.presentationTier.vaadin.reportType.ReportType;
 import module.projects.presentationTier.vaadin.reportType.ReportType.NoBehaviourCustomTableFormatter;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
-import module.projects.presentationTier.vaadin.reportType.components.TableSummaryComponent;
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.RoleType;
 import pt.ist.bennu.core.util.BundleUtil;
@@ -121,59 +120,30 @@ public class ProjectsInitializer implements ServletContextListener {
                 list = new ArrayList<List<String>>();
                 list.add(new ArrayList<String>());
                 list.add(new ArrayList<String>());
-                ReportViewerComponent eurRevenue;
-                ReportViewerComponent cabimentos, adiantamentos;
-                String projectCode = getProjectFromID(unit.getExternalId()).getProjectCode();
-                eurRevenue =
+
+                ReportViewerComponent projectSummary;
+                Project project = getProjectFromID(unit.getExternalId());
+                String projectCode = project.getProjectCode();
+                System.out.println(projectCode);
+
+                projectSummary =
                         new ReportViewerComponent(
-                                "select \"RECEITA\", \"DESPESA\", \"TOTAL\" from V_RESUMO_EURO where PROJECTCODE='" + projectCode
-                                        + "'", new NoBehaviourCustomTableFormatter());
+                                "SELECT V.\"Orçamento\", V.\"Máximo Financiável\", V.\"Receita\", V.\"Despesa\", V.\"Adiantamentos por Justificar\", V.\"Cabimentos por Executar\" , V.\"Saldo Tesouraria\" FROM V_RESPROJPROF V WHERE V.\"NºProj\"='"
+                                        + projectCode + "'", new NoBehaviourCustomTableFormatter());
 
-                adiantamentos =
-                        new ReportViewerComponent(
-                                "select distinct \"PAI_IDMOV\", \"PAI_IDRUB\", \"PAI_TIPO\", TO_CHAR(\"PAI_DATA\",'YYYY-MM-DD') as DATA, \"PAI_DESCRICAO\", \"PAI_VALOR_TOTAL\", SUM(\"FILHO_VALOR\") + SUM(\"FILHO_IVA\") as EXECUTED, (\"PAI_VALOR_TOTAL\" - SUM(\"FILHO_VALOR\") - SUM(\"FILHO_IVA\")) as MISSING from \"V_MOV_ADIANTAMENTOS\" where \"PAI_IDPROJ\"='"
-                                        + projectCode
-                                        + "' group by \"PAI_IDMOV\", \"PAI_IDRUB\", \"PAI_TIPO\", \"PAI_DATA\", \"PAI_DESCRICAO\", \"PAI_VALOR_TOTAL\" order by DATA",
-                                new NoBehaviourCustomTableFormatter());
+                Table t = projectSummary.getTable();
 
-                cabimentos =
-                        new ReportViewerComponent(
-                                "select \"PAI_IDMOV\", \"PAI_IDRUB\", \"PAI_TIPO\", TO_CHAR(\"PAI_DATA\",'YYYY-MM-DD') as DATA, \"PAI_DESCRICAO\", \"PAI_VALOR_TOTAL\",SUM(FILHO_VALOR) + SUM(FILHO_IVA) as TOTAL_EXECUCOES, \"PAI_VALOR_TOTAL\" - SUM(FILHO_VALOR) - SUM(FILHO_IVA) EXECUCOES_EM_FALTA from \"V_MOV_CABIMENTOS\" where \"PAI_IDPROJ\"='"
-                                        + projectCode
-                                        + "' group by \"PAI_IDMOV\", \"PAI_TIPO\", \"PAI_IDPROJ\", \"PAI_IDRUB\", \"PAI_DATA\", \"PAI_DESCRICAO\", \"PAI_VALOR_TOTAL\" order by DATA",
-                                new NoBehaviourCustomTableFormatter());
+                if (t.getItemIds().size() > 0) {
+                    for (Object a : t.getItemIds()) {
+                        Item item = t.getItem(a);
 
-                TableSummaryComponent cabimentosSummaray =
-                        new TableSummaryComponent(cabimentos.getTable(), ReportType.CABIMENTOS_STRING, "EXECUCOES_EM_FALTA");
-
-                TableSummaryComponent adiantamentosSummary =
-                        new TableSummaryComponent(adiantamentos.getTable(), ReportType.ADIANTAMENTOS_STRING, "MISSING");
-
-                Table t = eurRevenue.getTable();
-
-                t.setColumnHeader("RECEITA", getMessage("financialprojectsreports.summary.treasury.revenue"));
-                t.setColumnHeader("DESPESA", getMessage("financialprojectsreports.summary.treasury.expense"));
-                t.setColumnHeader("TOTAL", getMessage("financialprojectsreports.summary.treasury.total"));
-
-                Item item = t.getItem(t.getItemIds().toArray()[0]);
-                for (Object column : item.getItemPropertyIds()) {
-                    String itemString = ReportType.formatCurrency(item.getItemProperty(column).toString());
-                    list.get(0).add(t.getColumnHeader(column));
-                    list.get(1).add(itemString);
+                        for (Object column : item.getItemPropertyIds()) {
+                            String itemString = ReportType.formatCurrency(item.getItemProperty(column).toString());
+                            list.get(0).add(t.getColumnHeader(column));
+                            list.get(1).add(itemString);
+                        }
+                    }
                 }
-
-                for (String column : cabimentosSummaray.getResults().keySet()) {
-                    String value = ReportType.formatCurrency(cabimentosSummaray.getResults().get(column));
-                    list.get(0).add(getMessage("financialprojectsreports.summary.cabimentos"));
-                    list.get(1).add(value);
-                }
-
-                for (String column : adiantamentosSummary.getResults().keySet()) {
-                    String value = ReportType.formatCurrency(adiantamentosSummary.getResults().get(column));
-                    list.get(0).add(getMessage("financialprojectsreports.summary.adiantamentos"));
-                    list.get(1).add(value);
-                }
-
             }
             return list;
         }
