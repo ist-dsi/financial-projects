@@ -10,6 +10,12 @@ of that nature.
 
 ### On Develop
 
+### v1.2.0
+
+        Added summary to project page to display budget information.
+        Fixed some expense views.
+
+
 ### v1.1.0
 
 	Fixed multiple bugs including closing db transactions.
