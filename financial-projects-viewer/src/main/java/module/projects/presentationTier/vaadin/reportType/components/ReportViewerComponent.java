@@ -60,15 +60,12 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
                     new SimpleJDBCConnectionPool(driverName, getAlias(propPrefix), PropertiesManager.getProperty(propPrefix
                             + ".user"), PropertiesManager.getProperty(propPrefix + ".pass"), 2, 5);
 
-            query = new FreeformQuery(queryString, connectionPool);
-            reportData = new SQLContainer(query);
             viewTable = new Table() {
 
                 @Override
                 protected String formatPropertyValue(Object rowId, Object colId, com.vaadin.data.Property property) {
 
                     String columnHeader = colId.toString().toLowerCase();
-                    System.out.println("Column id: " + columnHeader);
 
                     if (isCurrencyColumn(columnHeader)) {
 
@@ -98,6 +95,9 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
                 };
             };
 
+            query = new FreeformQuery(queryString, connectionPool);
+            reportData = new SQLContainer(query);
+
             viewTable.setContainerDataSource(reportData);
 
             setNumberRightAlignment();
@@ -119,25 +119,6 @@ public class ReportViewerComponent extends CustomComponent implements Reportable
                     if (value instanceof BigDecimal) {
                         viewTable.setColumnAlignment(propertyID, Table.ALIGN_RIGHT);
                         continue;
-                    }
-                }
-            }
-        }
-    }
-
-    private void setCurrencyFormat() {
-        for (Object itemId : reportData.getItemIds()) {
-            Item i = reportData.getItem(itemId);
-            for (Object propertyID : i.getItemPropertyIds()) {
-                Object value = i.getItemProperty(propertyID).getValue();
-                if (value != null) {
-                    if (value instanceof BigDecimal) {
-                        BigDecimal number = (BigDecimal) value;
-                        if (!propertyID.toString().equals("Rubrica")) {
-                            number = number.setScale(2, BigDecimal.ROUND_HALF_UP);
-                            reportData.getItem(itemId).getItemProperty(propertyID).setValue(number);
-
-                        }
                     }
                 }
             }
