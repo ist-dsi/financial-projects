@@ -61,11 +61,11 @@ public class ExpensesReportType extends ProjectReportType {
 
         eurRevenue =
                 new ReportViewerComponent(
-                        "select \"RECEITA\", \"DESPESA\", \"IVA\", \"AD_POR_JUST\", \"TOTAL\" from V_RESUMO_EURO where PROJECTCODE='"
+                        "select \"RECEITA\", \"DESPESA\", \"IVA\", \"DESPESA\"+\"IVA\" AS DESPESA_IVA, \"AD_POR_JUST\", \"TOTAL\" from V_RESUMO_EURO where PROJECTCODE='"
                                 + getProjectCode() + "'", getCustomFormatter());
         pteRevenue =
                 new ReportViewerComponent(
-                        "select \"RECEITA\", \"DESPESA\", \"IVA\", \"TOTAL\" from  V_RESUMO_PTE where PROJECTCODE='"
+                        "select \"RECEITA\", \"DESPESA\", \"IVA\", \"DESPESA\"+\"IVA\" AS DESPESA_IVA, \"TOTAL\" from  V_RESUMO_PTE where PROJECTCODE='"
                                 + getProjectCode() + "'", getCustomFormatter());
 
         setTreasuryInfoColumnNames(eurRevenue.getTable(), pteRevenue.getTable());
@@ -183,14 +183,16 @@ public class ExpensesReportType extends ProjectReportType {
 
     public void setTreasuryInfoColumnNames(Table eurTable, Table pteTable) {
         eurTable.setColumnHeader("RECEITA", getMessage("financialprojectsreports.expenses.treasury.column.revenue"));
-        eurTable.setColumnHeader("DESPESA", getMessage("financialprojectsreports.expenses.treasury.column.expense"));
+        eurTable.setColumnHeader("DESPESA", getMessage("financialprojectsreports.expenses.treasury.column.expense_wout_iva"));
         eurTable.setColumnHeader("IVA", getMessage("financialprojectsreports.expenses.treasury.column.iva"));
+        eurTable.setColumnHeader("DESPESA_IVA", getMessage("financialprojectsreports.expenses.treasury.column.expense_with_iva"));
         eurTable.setColumnHeader("TOTAL", getMessage("financialprojectsreports.expenses.treasury.column.total"));
         eurTable.setColumnHeader("AD_POR_JUST", getMessage("financialprojectsreports.expenses.treasury.column.just_ad"));
 
         pteTable.setColumnHeader("RECEITA", getMessage("financialprojectsreports.expenses.treasury.column.revenue"));
-        pteTable.setColumnHeader("DESPESA", getMessage("financialprojectsreports.expenses.treasury.column.expense"));
+        pteTable.setColumnHeader("DESPESA", getMessage("financialprojectsreports.expenses.treasury.column.expense_wout_iva"));
         pteTable.setColumnHeader("IVA", getMessage("financialprojectsreports.expenses.treasury.column.iva"));
+        pteTable.setColumnHeader("DESPESA_IVA", getMessage("financialprojectsreports.expenses.treasury.column.expense_with_iva"));
         pteTable.setColumnHeader("TOTAL", getMessage("financialprojectsreports.expenses.treasury.column.total"));
 
     }
