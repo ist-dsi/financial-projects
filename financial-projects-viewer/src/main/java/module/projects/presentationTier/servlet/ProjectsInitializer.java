@@ -123,24 +123,26 @@ public class ProjectsInitializer implements ServletContextListener {
 
                 ReportViewerComponent projectSummary;
                 Project project = getProjectFromID(unit.getExternalId());
-                String projectCode = project.getProjectCode();
-                System.out.println(projectCode);
+                if (project != null) {
+                    String projectCode = project.getProjectCode();
+                    System.out.println(projectCode);
 
-                projectSummary =
-                        new ReportViewerComponent(
-                                "SELECT V.\"Orçamento\", V.\"Máximo Financiável\", V.\"Receita\", V.\"Despesa\", V.\"Adiantamentos por Justificar\", V.\"Cabimentos por Executar\" , V.\"Saldo Tesouraria\" FROM V_RESPROJPROF V WHERE V.\"NºProj\"='"
-                                        + projectCode + "'", new NoBehaviourCustomTableFormatter());
+                    projectSummary =
+                            new ReportViewerComponent(
+                                    "SELECT V.\"Orçamento\", V.\"Máximo Financiável\" AS \"Máx. Financiável\", V.\"Receita\", V.\"Transf. Parceiros\", V.\"Despesa\", V.\"Adiantamentos por Justificar\" AS \"Adiantamentos por Justificar\", V.\"Cabimentos por Executar\" AS \"Cabimentos por Executar\", V.\"Saldo Tesouraria\" FROM V_RESPROJPROF V WHERE V.\"NºProj\"='"
+                                            + projectCode + "'", new NoBehaviourCustomTableFormatter());
 
-                Table t = projectSummary.getTable();
+                    Table t = projectSummary.getTable();
 
-                if (t.getItemIds().size() > 0) {
-                    for (Object a : t.getItemIds()) {
-                        Item item = t.getItem(a);
+                    if (t.getItemIds().size() > 0) {
+                        for (Object a : t.getItemIds()) {
+                            Item item = t.getItem(a);
 
-                        for (Object column : item.getItemPropertyIds()) {
-                            String itemString = ReportType.formatCurrency(item.getItemProperty(column).toString());
-                            list.get(0).add(t.getColumnHeader(column));
-                            list.get(1).add(itemString);
+                            for (Object column : item.getItemPropertyIds()) {
+                                String itemString = ReportType.formatCurrency(item.getItemProperty(column).toString());
+                                list.get(0).add(t.getColumnHeader(column));
+                                list.get(1).add(itemString);
+                            }
                         }
                     }
                 }

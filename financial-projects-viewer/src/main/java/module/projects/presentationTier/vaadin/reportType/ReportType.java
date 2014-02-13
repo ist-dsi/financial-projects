@@ -5,6 +5,7 @@
 package module.projects.presentationTier.vaadin.reportType;
 
 import java.io.Serializable;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -140,6 +141,8 @@ public abstract class ReportType implements Reportable {
         symbols.setGroupingSeparator(' ');
         formatter.setDecimalFormatSymbols(symbols);
         formatter.setMinimumFractionDigits(2);
+        formatter.setMaximumFractionDigits(2);
+        formatter.setRoundingMode(RoundingMode.HALF_UP);
         return formatter.format(Double.parseDouble(string));
     }
 
