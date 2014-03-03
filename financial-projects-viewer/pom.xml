@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>projects</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <packaging>jar</packaging>
 
     <name>Projects</name>
@@ -23,8 +23,8 @@
 
     <properties>
         <version.pt.ist.bennu.core>1.1.0</version.pt.ist.bennu.core>
-        <version.pt.ist.bennu.vaadin>1.1.0</version.pt.ist.bennu.vaadin>
-        <version.pt.ist.expenditure.tracking>1.4.0</version.pt.ist.expenditure.tracking>
+        <version.pt.ist.bennu.vaadin>1.1.1</version.pt.ist.bennu.vaadin>
+        <version.pt.ist.expenditure.tracking>1.8.4</version.pt.ist.expenditure.tracking>
     </properties>
 
     <organization>
