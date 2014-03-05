@@ -137,7 +137,8 @@ public abstract class ReportType implements Reportable {
         DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
         DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
-        symbols.setGroupingSeparator(' ');
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
         formatter.setDecimalFormatSymbols(symbols);
         formatter.setMinimumFractionDigits(2);
         return formatter.format(Double.parseDouble(string));
