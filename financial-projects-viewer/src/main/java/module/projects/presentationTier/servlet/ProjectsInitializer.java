@@ -103,6 +103,7 @@ public class ProjectsInitializer implements ServletContextListener {
             return map;
         }
 
+        @Override
         public List<List<String>> getSummary(String page, Object object) {
             List<List<String>> list = null;
             if (page.equals("viewOrganization.jsp")) {
@@ -129,7 +130,7 @@ public class ProjectsInitializer implements ServletContextListener {
 
                     projectSummary =
                             new ReportViewerComponent(
-                                    "SELECT V.\"Orçamento\", V.\"Máximo Financiável\" AS \"Máx. Financiável\", V.\"Receita\", V.\"Transf. Parceiros\", V.\"Despesa\", V.\"Adiantamentos por Justificar\" AS \"Adiantamentos por Justificar\", V.\"Cabimentos por Executar\" AS \"Cabimentos por Executar\", V.\"Saldo Tesouraria\" FROM V_RESPROJPROF V WHERE V.\"NºProj\"='"
+                                    "SELECT V.\"Orçamento\", V.\"Máximo Financiável\" AS \"Máx. Financiável\", V.\"Receita\", V.\"Transf. Parceiros\", V.\"Despesa\", V.\"Adiantamentos por Justificar\", V.\"Cabimentos por Executar\", V.\"Saldo Tesouraria\", V.\"Saldo Orçamental\" FROM V_RESPROJPROF V WHERE V.\"NºProj\"='"
                                             + projectCode + "'", new NoBehaviourCustomTableFormatter());
 
                     Table t = projectSummary.getTable();
