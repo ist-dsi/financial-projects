@@ -3,6 +3,7 @@ package module.projects.presentationTier.vaadin.reportType;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import module.projects.presentationTier.vaadin.IllegalAccessException;
 import module.projects.presentationTier.vaadin.reportType.components.CoordinatorHeaderComponent;
@@ -15,6 +16,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.RoleType;
 import pt.ist.bennu.core.domain.User;
+import pt.ist.expenditureTrackingSystem.domain.authorizations.Authorization;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 import pt.ist.expenditureTrackingSystem.domain.organization.SubProject;
 import pt.ist.expenditureTrackingSystem.domain.organization.Unit;
@@ -87,11 +89,20 @@ public class CoordinatorReportType extends ReportType {
         for (Unit unit : directResponsibleUnits) {
             Project project = getProjectFromID(unit.getExternalId());
             if (project != null) {
-                String projectCode = project.getProjectCode();
-                if (projectCode.matches("[a-zA-Z][a-zA-Z]\\d{1,4}")) {
-                    projectCode = projectCode.substring(2);
+                Set<Authorization> projectAuthorizations = project.getAuthorizationsSet();
+                for (Authorization auth : projectAuthorizations) {
+                    if (auth.getPerson().equals(user.getExpenditurePerson())) {
+                        if (auth.isValid()) {
+                            String projectCode = project.getProjectCode();
+                            if (projectCode.matches("[a-zA-Z][a-zA-Z]\\d{1,4}")) {
+                                projectCode = projectCode.substring(2);
+                            }
+                            directResponsibleProjectCodes.add(projectCode);
+                        } else {
+                            break;
+                        }
+                    }
                 }
-                directResponsibleProjectCodes.add(projectCode);
             }
         }
         String queryProjectInfo = "";

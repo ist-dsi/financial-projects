@@ -61,8 +61,9 @@ public class ExpensesReportType extends ProjectReportType {
 
         eurRevenue =
                 new ReportViewerComponent(
-                        "select \"RECEITA\", \"DESPESA\", \"IVA\", \"DESPESA\"+\"IVA\" AS DESPESA_IVA, \"AD_POR_JUST\", \"TOTAL\" from V_RESUMO_EURO where PROJECTCODE='"
+                        "select S.\"Receita\", V.\"DESPESA\", V.\"IVA\", V.\"DESPESA\"+V.\"IVA\" AS DESPESA_IVA, V.\"AD_POR_JUST\", S.\"Transf. Parceiros\", S.\"Saldo Tesouraria\" from V_RESUMO_EURO V join V_RESPROJPROF S on V.PROJECTCODE = S.\"NºProj\" where V.PROJECTCODE='"
                                 + getProjectCode() + "'", getCustomFormatter());
+
         pteRevenue =
                 new ReportViewerComponent(
                         "select \"RECEITA\", \"DESPESA\", \"IVA\", \"DESPESA\"+\"IVA\" AS DESPESA_IVA, \"TOTAL\" from  V_RESUMO_PTE where PROJECTCODE='"
@@ -144,7 +145,7 @@ public class ExpensesReportType extends ProjectReportType {
         Layout layout = new VerticalLayout();
         Item item = t.getItem(t.getItemIds().toArray()[0]);
         for (Object column : item.getItemPropertyIds()) {
-            String itemString = formatCurrency(item.getItemProperty(column).toString());
+            String itemString = ReportType.formatCurrency(item.getItemProperty(column).toString());
             layout.addComponent(new Label("<b>" + t.getColumnHeader(column) + " " + tableName + ":</b> " + itemString,
                     Label.CONTENT_XHTML));
         }
@@ -182,7 +183,7 @@ public class ExpensesReportType extends ProjectReportType {
     }
 
     public void setTreasuryInfoColumnNames(Table eurTable, Table pteTable) {
-        eurTable.setColumnHeader("RECEITA", getMessage("financialprojectsreports.expenses.treasury.column.revenue"));
+        eurTable.setColumnHeader("Receita", getMessage("financialprojectsreports.expenses.treasury.column.revenue"));
         eurTable.setColumnHeader("DESPESA", getMessage("financialprojectsreports.expenses.treasury.column.expense_wout_iva"));
         eurTable.setColumnHeader("IVA", getMessage("financialprojectsreports.expenses.treasury.column.iva"));
         eurTable.setColumnHeader("DESPESA_IVA", getMessage("financialprojectsreports.expenses.treasury.column.expense_with_iva"));
