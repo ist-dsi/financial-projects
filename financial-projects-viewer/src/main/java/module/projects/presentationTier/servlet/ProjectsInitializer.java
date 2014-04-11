@@ -14,8 +14,10 @@ import module.projects.presentationTier.vaadin.reportType.ReportType.NoBehaviour
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.RoleType;
+import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.expenditureTrackingSystem.domain.ExpenditureTrackingSystem;
+import pt.ist.expenditureTrackingSystem.domain.organization.AccountingUnit;
 import pt.ist.expenditureTrackingSystem.domain.organization.Person;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 import pt.ist.expenditureTrackingSystem.domain.organization.SubProject;
@@ -53,9 +55,14 @@ public class ProjectsInitializer implements ServletContextListener {
                 }
 
                 Unit unit = (Unit) object;
-                Person currentUser = UserView.getCurrentUser().getExpenditurePerson();
-                if (!(unit.isResponsible(currentUser) || unit.getObserversSet().contains(currentUser) || UserView
-                        .getCurrentUser().hasRoleType(RoleType.MANAGER))) {
+                final User user = UserView.getCurrentUser();
+                Person currentUser = user.getExpenditurePerson();
+                if (!(unit.isResponsible(currentUser)
+                		|| unit.getObserversSet().contains(currentUser)
+                		|| UserView.getCurrentUser().hasRoleType(RoleType.MANAGER)
+                		|| unit.isProjectAccountingEmployee(currentUser)
+                		|| ExpenditureTrackingSystem.isProjectAccountingManagerGroupMember(user)
+                		|| ExpenditureTrackingSystem.isAcquisitionsProcessAuditorGroupMember(user))) {
                     return null;
                 }
 
