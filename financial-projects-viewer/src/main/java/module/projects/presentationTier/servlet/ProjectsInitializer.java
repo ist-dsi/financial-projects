@@ -9,6 +9,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import module.projects.presentationTier.servlet.ProjectsInitializer.ProjectReportsInfoProvider;
 import module.projects.presentationTier.vaadin.reportType.ReportType;
 import module.projects.presentationTier.vaadin.reportType.ReportType.NoBehaviourCustomTableFormatter;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
@@ -17,7 +18,6 @@ import pt.ist.bennu.core.domain.RoleType;
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.expenditureTrackingSystem.domain.ExpenditureTrackingSystem;
-import pt.ist.expenditureTrackingSystem.domain.organization.AccountingUnit;
 import pt.ist.expenditureTrackingSystem.domain.organization.Person;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 import pt.ist.expenditureTrackingSystem.domain.organization.SubProject;
@@ -57,12 +57,11 @@ public class ProjectsInitializer implements ServletContextListener {
                 Unit unit = (Unit) object;
                 final User user = UserView.getCurrentUser();
                 Person currentUser = user.getExpenditurePerson();
-                if (!(unit.isResponsible(currentUser)
-                		|| unit.getObserversSet().contains(currentUser)
-                		|| UserView.getCurrentUser().hasRoleType(RoleType.MANAGER)
-                		|| unit.isProjectAccountingEmployee(currentUser)
-                		|| ExpenditureTrackingSystem.isProjectAccountingManagerGroupMember(user)
-                		|| ExpenditureTrackingSystem.isAcquisitionsProcessAuditorGroupMember(user))) {
+                if (!(unit.isResponsible(currentUser) || unit.getObserversSet().contains(currentUser)
+                        || UserView.getCurrentUser().hasRoleType(RoleType.MANAGER)
+                        || unit.isProjectAccountingEmployee(currentUser)
+                        || ExpenditureTrackingSystem.isProjectAccountingManagerGroupMember(user) || ExpenditureTrackingSystem
+                            .isAcquisitionsProcessAuditorGroupMember(user))) {
                     return null;
                 }
 
@@ -81,15 +80,15 @@ public class ProjectsInitializer implements ServletContextListener {
                             + ReportType.PROJECT_BUDGETARY_BALANCE_STRING);
                     map.put(getMessage("financialprojectsreports.infoProvider.openingFile"), baseLink + "&reportType="
                             + ReportType.OPENING_PROJECT_FILE_STRING);
-                } else {
-                    map.put(getMessage("financialprojectsreports.infoProvider.unitSummary"), baseLink + "&reportType="
-                            + ReportType.UNIT_SUMMARY_STRING);
-                    map.put(getMessage("financialprojectsreports.infoProvider.generatedOverheads"), baseLink + "&reportType="
-                            + ReportType.GENERATED_OVERHEADS_STRING);
-                    map.put(getMessage("financialprojectsreports.infoProvider.transferedOverheads"), baseLink + "&reportType="
-                            + ReportType.TRANSFERED_OVERHEADS_STRING);
-                    map.put(getMessage("financialprojectsreports.infoProvider.overheadsSummary"), baseLink + "&reportType="
-                            + ReportType.OVERHEADS_SUMMARY_STRING);
+//                } else {
+//                    map.put(getMessage("financialprojectsreports.infoProvider.unitSummary"), baseLink + "&reportType="
+//                            + ReportType.UNIT_SUMMARY_STRING);
+//                    map.put(getMessage("financialprojectsreports.infoProvider.generatedOverheads"), baseLink + "&reportType="
+//                            + ReportType.GENERATED_OVERHEADS_STRING);
+//                    map.put(getMessage("financialprojectsreports.infoProvider.transferedOverheads"), baseLink + "&reportType="
+//                            + ReportType.TRANSFERED_OVERHEADS_STRING);
+//                    map.put(getMessage("financialprojectsreports.infoProvider.overheadsSummary"), baseLink + "&reportType="
+//                            + ReportType.OVERHEADS_SUMMARY_STRING);
                 }
             }
             if (page.equals("viewPerson.jsp")) {
