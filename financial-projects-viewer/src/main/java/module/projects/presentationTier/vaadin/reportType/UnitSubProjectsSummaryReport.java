@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import module.projects.domain.AccessControl;
 import module.projects.presentationTier.vaadin.IllegalAccessException;
 import module.projects.presentationTier.vaadin.reportType.components.CoordinatorHeaderComponent;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
@@ -14,7 +15,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.RoleType;
-import pt.ist.expenditureTrackingSystem.domain.organization.Person;
+import pt.ist.bennu.core.domain.User;
 import pt.ist.expenditureTrackingSystem.domain.organization.Project;
 import pt.ist.expenditureTrackingSystem.domain.organization.Unit;
 import pt.ist.fenixframework.FenixFramework;
@@ -36,10 +37,8 @@ public class UnitSubProjectsSummaryReport extends ReportType {
 
         unitID = args.get("unit");
         Unit unit = FenixFramework.getDomainObject(unitID);
-        Person currentUser = UserView.getCurrentUser().getExpenditurePerson();
-        if (unit.isProject()
-                || !(unit.isResponsible(currentUser) || unit.getObserversSet().contains(currentUser) || currentUser.getUser()
-                        .hasRoleType(RoleType.MANAGER))) {
+        final User user = UserView.getCurrentUser();
+        if (unit.isProject() || !AccessControl.isUserAllowedToViewDetailedProjectInfo(unit, user)) {
             throw new IllegalAccessException();
         }
 

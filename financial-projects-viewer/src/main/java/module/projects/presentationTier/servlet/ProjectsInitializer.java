@@ -9,7 +9,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import module.projects.presentationTier.servlet.ProjectsInitializer.ProjectReportsInfoProvider;
+import module.projects.domain.AccessControl;
 import module.projects.presentationTier.vaadin.reportType.ReportType;
 import module.projects.presentationTier.vaadin.reportType.ReportType.NoBehaviourCustomTableFormatter;
 import module.projects.presentationTier.vaadin.reportType.components.ReportViewerComponent;
@@ -56,12 +56,7 @@ public class ProjectsInitializer implements ServletContextListener {
 
                 Unit unit = (Unit) object;
                 final User user = UserView.getCurrentUser();
-                Person currentUser = user.getExpenditurePerson();
-                if (!(unit.isResponsible(currentUser) || unit.getObserversSet().contains(currentUser)
-                        || UserView.getCurrentUser().hasRoleType(RoleType.MANAGER)
-                        || unit.isProjectAccountingEmployee(currentUser)
-                        || ExpenditureTrackingSystem.isProjectAccountingManagerGroupMember(user) || ExpenditureTrackingSystem
-                            .isAcquisitionsProcessAuditorGroupMember(user))) {
+                if (!AccessControl.isUserAllowedToViewDetailedProjectInfo(unit, user)) {
                     return null;
                 }
 
@@ -118,9 +113,8 @@ public class ProjectsInitializer implements ServletContextListener {
                 }
 
                 Unit unit = (Unit) object;
-                Person currentUser = UserView.getCurrentUser().getExpenditurePerson();
-                if (!(unit.isResponsible(currentUser) || unit.getObserversSet().contains(currentUser) || UserView
-                        .getCurrentUser().hasRoleType(RoleType.MANAGER))) {
+                final User user = UserView.getCurrentUser();
+                if (!AccessControl.isUserAllowedToViewDetailedProjectInfo(unit, user)) {
                     return null;
                 }
 
