@@ -178,6 +178,7 @@ public class OpeningFileReportType extends ProjectReportType {
                                 + getProjectCode() + "'", getCustomFormatter());
         budgetByRubricReportViewer.getTable().setPageLength(0);
         addComponent(budgetByRubricReportViewer);
+        addComponent(new Label(getMessage("financialprojectsreports.openingFile.label.warning"), Label.CONTENT_XHTML));
 
         addComponent(new Label("<h3><b>" + getMessage("financialprojectsreports.openingFile.label.researchTeam") + "</b></h3>",
                 Label.CONTENT_XHTML));
@@ -189,15 +190,57 @@ public class OpeningFileReportType extends ProjectReportType {
 
         addComponent(new Label("<h3><b>" + getMessage("financialprojectsreports.openingFile.label.membersBudget") + "</b></h3>",
                 Label.CONTENT_XHTML));
-        ReportViewerComponent consorciumMemberBudgetViewer =
-                new ReportViewerComponent(
-                        "select \"INSTITUICAO\", \"DESCRICAOINSTITUICAO\", \"TIPO\", \"OVH\", \"GRP\", \"PCTFINANCIAMENTO\" from V_MEMBROS_CONSORCIO where PROJECTO='"
-                                + getProjectCode() + "'", getCustomFormatter());
-        consorciumMemberBudgetViewer.getTable().setPageLength(0);
-        addComponent(consorciumMemberBudgetViewer);
 
-        setColumnsHeaders(financingEntitiesReportViewer.getTable(), budgetByRubricReportViewer.getTable(),
-                teamReportViewer.getTable(), consorciumMemberBudgetViewer.getTable());
+        ReportViewerComponent arePartnersView =
+                new ReportViewerComponent("select controloorcammemb from V_FICHA_ABERTURA where PROJECTO='" + getProjectCode()
+                        + "'", getCustomFormatter());
+
+        Table arePartnersTable = arePartnersView.getTable();
+        boolean areTherePartners = false;
+
+        for (Object itemId : arePartnersTable.getItemIds()) {
+            String partner = arePartnersTable.getItem(itemId).getItemProperty("CONTROLOORCAMMEMB").toString();
+            if (partner.equals("Y")) {
+                areTherePartners = true;
+                break;
+            }
+        }
+
+        if (areTherePartners) {
+            ReportViewerComponent consorciumBudgetViewer =
+                    new ReportViewerComponent(
+                            "select \"INSTITUICAO\", \"DESCRICAOINSTITUICAO\", \"TIPO\", \"OVH\", \"GRP\", \"PCTFINANCIAMENTO\" from V_MEMBROS_CONSORCIO where PROJECTO='"
+                                    + getProjectCode() + "'", getCustomFormatter());
+            consorciumBudgetViewer.getTable().setPageLength(0);
+            addComponent(consorciumBudgetViewer);
+            setColumnsHeaders(financingEntitiesReportViewer.getTable(), budgetByRubricReportViewer.getTable(),
+                    teamReportViewer.getTable(), consorciumBudgetViewer.getTable());
+
+            for (Object itemId : consorciumBudgetViewer.getTable().getItemIds()) {
+                String member = consorciumBudgetViewer.getTable().getItem(itemId).getItemProperty("INSTITUICAO").toString();
+                String memberName =
+                        consorciumBudgetViewer.getTable().getItem(itemId).getItemProperty("DESCRICAOINSTITUICAO").toString();
+                addComponent(new Label("<b>" + getMessage("financialprojectsreports.openingFile.label.perMembersBudget") + " "
+                        + member + " (" + memberName + ")" + "</b>", Label.CONTENT_XHTML));
+                ReportViewerComponent consorciumMemberBudgetViewer =
+                        new ReportViewerComponent(
+                                "select RUBRICA,DESCRIPTIONRUBRICA, VALOR from V_RUBRICAS_MEMBROS where PROJECTO='"
+                                        + getProjectCode() + "' AND INSTITUICAO='" + member + "'", getCustomFormatter());
+                consorciumMemberBudgetViewer.getTable().setPageLength(0);
+                addComponent(consorciumMemberBudgetViewer);
+                setBudgetPerMemberTableHeaders(consorciumMemberBudgetViewer.getTable());
+            }
+
+        } else {
+            ReportViewerComponent consorciumMemberBudgetViewer =
+                    new ReportViewerComponent(
+                            "select \"INSTITUICAO\", \"DESCRICAOINSTITUICAO\", \"TIPO\", \"OVH\", \"GRP\", \"PCTFINANCIAMENTO\" from V_MEMBROS_CONSORCIO where PROJECTO='"
+                                    + getProjectCode() + "'", getCustomFormatter());
+            consorciumMemberBudgetViewer.getTable().setPageLength(0);
+            addComponent(consorciumMemberBudgetViewer);
+            setColumnsHeaders(financingEntitiesReportViewer.getTable(), budgetByRubricReportViewer.getTable(),
+                    teamReportViewer.getTable(), consorciumMemberBudgetViewer.getTable());
+        }
 
     }
 
@@ -239,15 +282,9 @@ public class OpeningFileReportType extends ProjectReportType {
 
     public void setColumnsHeaders(Table financingEntitiesTable, Table budgetbyRubricTable, Table researchTeamTable,
             Table membersBudgetTable) {
-        financingEntitiesTable.setColumnHeader("CODE", getMessage("financialprojectsreports.openingFileReport.column.code"));
-        financingEntitiesTable.setColumnHeader("DESCRIPTION",
-                getMessage("financialprojectsreports.openingFileReport.column.description"));
-        financingEntitiesTable.setColumnHeader("VALUE", getMessage("financialprojectsreports.openingFileReport.column.value"));
+        setBudgetTableHeaders(financingEntitiesTable);
 
-        budgetbyRubricTable.setColumnHeader("CODE", getMessage("financialprojectsreports.openingFileReport.column.code"));
-        budgetbyRubricTable.setColumnHeader("DESCRIPTION",
-                getMessage("financialprojectsreports.openingFileReport.column.description"));
-        budgetbyRubricTable.setColumnHeader("VALUE", getMessage("financialprojectsreports.openingFileReport.column.value"));
+        setBudgetTableHeaders(budgetbyRubricTable);
 
         researchTeamTable.setColumnHeader("CODE", getMessage("financialprojectsreports.openingFileReport.column.code"));
         researchTeamTable.setColumnHeader("DESCRIPTION",
@@ -262,6 +299,20 @@ public class OpeningFileReportType extends ProjectReportType {
         membersBudgetTable.setColumnHeader("GRP", getMessage("financialprojectsreports.openingFileReport.column.grp"));
         membersBudgetTable.setColumnHeader("PCTFINANCIAMENTO",
                 getMessage("financialprojectsreports.openingFileReport.column.financingPercentage"));
+    }
+
+    private void setBudgetTableHeaders(Table budgetbyRubricTable) {
+        budgetbyRubricTable.setColumnHeader("CODE", getMessage("financialprojectsreports.openingFileReport.column.code"));
+        budgetbyRubricTable.setColumnHeader("DESCRIPTION",
+                getMessage("financialprojectsreports.openingFileReport.column.description"));
+        budgetbyRubricTable.setColumnHeader("VALUE", getMessage("financialprojectsreports.openingFileReport.column.value"));
+    }
+
+    private void setBudgetPerMemberTableHeaders(Table budgetbyRubricTable) {
+        budgetbyRubricTable.setColumnHeader("CODE", getMessage("financialprojectsreports.openingFileReport.column.code"));
+        budgetbyRubricTable.setColumnHeader("DESCRIPTIONRUBRICA",
+                getMessage("financialprojectsreports.openingFileReport.column.description"));
+        budgetbyRubricTable.setColumnHeader("VALUE", getMessage("financialprojectsreports.openingFileReport.column.value"));
     }
 
 }
