@@ -60,9 +60,7 @@ public class ProjectHeaderComponent extends CustomComponent implements Reportabl
         subLayout.addComponent(new Label(manager.getFirstAndLastName()));
         subLayout
                 .addComponent(getMessageBlacked("financialprojectsreports.header.label.financialprojectsreports.header.label.projectNumber"));
-        subLayout.addComponent(new Label(readProperty(item, "UNID_EXPLORACAO") + readProperty(item, "ORIGEM")
-                + readProperty(item, "TIPO") + readProperty(item, "CUSTO") + readProperty(item, "COORDENACAO")
-                + project.getExternalId()));
+        subLayout.addComponent(new Label(projectCode));
         subLayout
                 .addComponent(getMessageBlacked("financialprojectsreports.header.label.financialprojectsreports.header.label.id"));
         subLayout.addComponent(new Label(readProperty(item, "GESTOR")));
